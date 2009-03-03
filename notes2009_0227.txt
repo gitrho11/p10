@@ -1,0 +1,302 @@
+/pt/b/rho/notes2009_0227.txt
+
+
+I jumped the gun on my previous post:
+
+
+oracle@zareason:~$ irb
+/rho/lib/ruby/1.8/openssl/ssl.rb:26: uninitialized constant OpenSSL::SSL::VERIFY_PEER (NameError)
+        from /rho/lib/ruby/1.8/openssl.rb:23:in `require'
+        from /rho/lib/ruby/1.8/openssl.rb:23
+oracle@zareason:~$
+oracle@zareason:~$
+
+Let's see what is in the ruby-talk mail list:
+
+
+Posted by Brian Candler (candlerb) on 27.02.2009 10:08
+Phor Gruber wrote:
+> I'm on ubuntu-linux and I do see openssl development packages inside of
+> my OS:
+>
+> $ apt-cache search libssl
+> cl-plus-ssl - A simple Common Lisp interface to OpenSSL
+> dcmtk - The OFFIS DICOM toolkit command line utilities
+> libdcmtk1 - The OFFIS DICOM toolkit runtime libraries
+> libdcmtk1-dev - The OFFIS DICOM toolkit development libraries and
+> headers
+> libssl-ocaml - OCaml bindings for OpenSSL
+> libssl-ocaml-dev - OCaml bindings for OpenSSL
+> libssl-dev - SSL development libraries, header files and documentation
+> libssl0.9.8 - SSL shared libraries
+> libssl0.9.8-dbg - Symbol tables for libssl and libcrypto
+
+No you don't... apt-cache shows you which packages are *available* for
+you to install, not ones you actually have installed.
+
+To see what's installed, use: dpkg-query -l | grep ssl
+
+Then most likely you'll want to do: apt-get install libssl-dev
+
+> Also, I see this:
+>
+> $ apt-cache search  libopenssl-ruby
+> libopenssl-ruby - OpenSSL interface for Ruby
+> libopenssl-ruby1.9 - OpenSSL interface for Ruby 1.9
+> ruby1.8 - Interpreter of object-oriented scripting language Ruby 1.8
+> libopenssl-ruby1.8 - OpenSSL interface for Ruby 1.8
+
+If you were using Ubuntu's ruby1.8 package, then you could just install
+Ubuntu's libopenssl-ruby.
+
+But if you're building from source, you'll need libssl-dev.
+
+HTH,
+
+Brian.
+
+ooooooo ooooooo ooooooo ooooooo ooooooo ooooooo ooooooo ooooooo ooooooo
+
+I now see:
+
+
+oracle@zareason:~$
+oracle@zareason:~$ dpkg-query -l | grep ssl
+ii  libflac8                                   1.2.1-1ubuntu2                           Free Lossless Audio Codec - runtime C librar
+ii  libopenssl-ruby                            4.1                                      OpenSSL interface for Ruby
+ii  libopenssl-ruby1.8                         1.8.6.111-2ubuntu1.2                     OpenSSL interface for Ruby 1.8
+ii  libssl0.9.8                                0.9.8g-4ubuntu3.3                        SSL shared libraries
+ii  libwavpack1                                4.41.0-1                                 an audio codec (lossy and lossless) - librar
+ii  openssl                                    0.9.8g-4ubuntu3.3                        Secure Socket Layer (SSL) binary and related
+ii  openssl-blacklist                          0.3.3+0.4-0ubuntu0.8.04.3                list of blacklisted OpenSSL RSA keys
+ii  ssl-cert                                   1.0.14-0ubuntu2.1                        Simple debconf wrapper for openssl
+oracle@zareason:~$
+oracle@zareason:~$
+
+And....
+
+oracle@zareason:~$
+oracle@zareason:~$ su
+Password:
+root@zareason:/oracle# apt-get install libssl-dev
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  libssl0.9.8
+The following NEW packages will be installed:
+  libssl-dev
+The following packages will be upgraded:
+  libssl0.9.8
+1 upgraded, 1 newly installed, 0 to remove and 184 not upgraded.
+Need to get 2996kB of archives.
+After this operation, 6930kB of additional disk space will be used.
+Do you want to continue [Y/n]? y
+Get:1 http://us.archive.ubuntu.com hardy-updates/main libssl0.9.8 0.9.8g-4ubuntu3.4 [932kB]
+Get:2 http://us.archive.ubuntu.com hardy-updates/main libssl-dev 0.9.8g-4ubuntu3.4 [2065kB]
+Fetched 2996kB in 11s (267kB/s)
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+Preconfiguring packages ...
+(Reading database ... 120118 files and directories currently installed.)
+Preparing to replace libssl0.9.8 0.9.8g-4ubuntu3.3 (using .../libssl0.9.8_0.9.8g-4ubuntu3.4_amd64.deb) ...
+Unpacking replacement libssl0.9.8 ...
+Selecting previously deselected package libssl-dev.
+Unpacking libssl-dev (from .../libssl-dev_0.9.8g-4ubuntu3.4_amd64.deb) ...
+Setting up libssl0.9.8 (0.9.8g-4ubuntu3.4) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+
+Setting up libssl-dev (0.9.8g-4ubuntu3.4) ...
+Processing triggers for libc6 ...
+ldconfig deferred processing now taking place
+root@zareason:/oracle#
+
+Next....
+
+
+oracle@zareason:/$ cd rho
+oracle@zareason:/rho$ ll
+total 32
+drwxr-xr-x  7 oracle root 4096 2009-02-26 23:45 ./
+drwxr-xr-x 32 root   root 4096 2009-02-25 16:24 ../
+drwxr-xr-x  2 oracle dba  4096 2009-02-26 23:58 bin/
+drwxr-xr-x  4 oracle dba  4096 2009-02-26 23:47 include/
+drwxr-xr-x  5 oracle dba  4096 2009-02-26 23:58 lib/
+drwxr-xr-x  6 oracle dba  4096 2009-02-26 23:43 openssl/
+-rw-r--r--  1 oracle dba    32 2009-02-25 16:32 .rho
+drwxr-xr-x  7 oracle dba  4096 2009-02-26 23:47 share/
+oracle@zareason:/rho$ rm -rf bin in* lib op* sha*
+oracle@zareason:/rho$
+
+
+and:
+
+Re: Problem with new ruby install and openssl.rb (on Ubuntu)
+Posted by Phor Gruber (phor_gruber) on 28.02.2009 01:29
+Brian Candler wrote:
+>
+> To see what's installed, use: dpkg-query -l | grep ssl
+>
+> Then most likely you'll want to do: apt-get install libssl-dev
+>
+> But if you're building from source, you'll need libssl-dev.
+>
+> HTH,
+>
+> Brian.
+
+Brian,
+Your post was an enormous help.
+
+dpkg-query  is now my friend.
+
+Now I see this:
+$ /rho/bin/irb
+irb(main):001:0> require 'openssl'
+=> true
+irb(main):002:0>
+
+Thanks!!
+-4
+
+ps: another thing that I learned is that my editing of ext/Setup was unnecessary.
+
+oooooooooo
+
+Next:
+
+
+cd ~/software/rubygems-1.3.1/
+ruby setup.rb
+
+which gem
+gem list
+
+
+oracle@zareason:~/software/rubygems-1.3.1$ gem install rails --no-rdoc --no-ri
+Successfully installed rake-0.8.3
+Successfully installed activesupport-2.2.2
+Successfully installed activerecord-2.2.2
+Successfully installed actionpack-2.2.2
+Successfully installed actionmailer-2.2.2
+Successfully installed activeresource-2.2.2
+Successfully installed rails-2.2.2
+7 gems installed
+oracle@zareason:~/software/rubygems-1.3.1$
+
+then:
+
+ gem install rspec-rails rake --no-rdoc --no-ri
+
+
+oracle@zareason:~/software/rubygems-1.3.1$  gem install rspec-rails rake --no-rdoc --no-ri
+Successfully installed rspec-1.1.12
+Successfully installed rspec-rails-1.1.12
+Successfully installed rake-0.8.3
+3 gems installed
+oracle@zareason:~/software/rubygems-1.3.1$
+
+then:
+
+
+oracle@zareason:~/software/rhosync$ /rho/bin/rake gems:install
+(in /oracle/software/rhosync)
+gem install libxml-ruby
+ERROR:  Error installing libxml-ruby:
+        ERROR: Failed to build gem native extension.
+
+/rho/bin/ruby extconf.rb install libxml-ruby
+checking for socket() in -lsocket... no
+checking for gethostbyname() in -lnsl... yes
+checking for atan() in -lm... no
+checking for atan() in -lm... yes
+checking for inflate() in -lz... yes
+checking for iconv_open() in -liconv... no
+checking for libiconv_open() in -liconv... no
+checking for libiconv_open() in -llibiconv... no
+checking for iconv_open() in -llibiconv... no
+checking for iconv_open() in -lc... yes
+checking for xmlParseDoc() in -lxml2... no
+checking for xmlParseDoc() in -llibxml2... no
+checking for xmlParseDoc() in -lxml2... no
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file for more
+details.  You may need configuration options.
+
+Provided configuration options:
+        --with-opt-dir
+        --without-opt-dir
+        --with-opt-include
+        --without-opt-include=${opt-dir}/include
+        --with-opt-lib
+        --without-opt-lib=${opt-dir}/lib
+        --with-make-prog
+        --without-make-prog
+        --srcdir=.
+        --curdir
+        --ruby=/rho/bin/ruby
+        --with-iconv-dir
+        --without-iconv-dir
+        --with-iconv-include
+        --without-iconv-include=${iconv-dir}/include
+        --with-iconv-lib
+        --without-iconv-lib=${iconv-dir}/lib
+        --with-xml2-dir
+        --without-xml2-dir
+        --with-xml2-include
+        --without-xml2-include=${xml2-dir}/include
+        --with-xml2-lib
+        --without-xml2-lib=${xml2-dir}/lib
+        --with-zlib-dir
+        --without-zlib-dir
+        --with-zlib-include
+        --without-zlib-include=${zlib-dir}/include
+        --with-zlib-lib
+        --without-zlib-lib=${zlib-dir}/lib
+        --with-socketlib
+        --without-socketlib
+        --with-nsllib
+        --without-nsllib
+        --with-mlib
+        --without-mlib
+        --with-mlib
+        --without-mlib
+        --with-zlib
+        --without-zlib
+        --with-iconvlib
+        --without-iconvlib
+        --with-iconvlib
+        --without-iconvlib
+        --with-libiconvlib
+        --without-libiconvlib
+        --with-libiconvlib
+        --without-libiconvlib
+        --with-clib
+        --without-clib
+        --with-xml2lib
+        --without-xml2lib
+        --with-libxml2lib
+        --without-libxml2lib
+        --with-xml2lib
+        --without-xml2lib
+ extconf failure: need libxml2.
+
+    Install the library or try one of the following options to extconf.rb:
+
+      --with-xml2-dir=/path/to/libxml2
+      --with-xml2-lib=/path/to/libxml2/lib
+      --with-xml2-include=/path/to/libxml2/include
+
+
+
+Gem files will remain installed in /rho/lib/ruby/gems/1.8/gems/libxml-ruby-0.9.8 for inspection.
+Results logged to /rho/lib/ruby/gems/1.8/gems/libxml-ruby-0.9.8/ext/libxml/gem_make.out
+Building native extensions.  This could take a while...
+oracle@zareason:~/software/rhosync$
+
+
+

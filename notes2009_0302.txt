@@ -1,0 +1,22 @@
+/pt/b/rho/notes2009_0302.txt
+
+todo:
+  - gitrho11@yahoo.com
+  - create a git account for my code and notes: gitrho11
+  - keys: gitrho11_pub_key.txt gitrho11_priv_key.txt
+  - git project: p10
+Public Clone URL:       git://github.com/gitrho11/p10.git
+Your Clone URL:
+git@github.com:gitrho11/p10.git
+
+git config --global user.email gitrho11@yahoo.com
+
+Next steps:
+  mkdir p10
+  cd p10
+  git init
+  touch README
+  git add README
+  git commit -m 'first commit'
+  git remote add origin git@github.com:gitrho11/p10.git
+  git push origin master

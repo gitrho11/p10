@@ -1,0 +1,70 @@
+/pt/b/rho/notes2009_0226.txt
+
+I'm struggling with installing ruby.
+
+this link has promise:
+
+http://blog.mondragon.cc/articles/2007/02/03/compiling-ruby-1-8-5-w-openssl-on-debian-etch-testing-and-freebsd-in-home
+
+
+wget ftp://ftp.cwru.edu/pub/bash/readline-5.2.tar.gz
+wget http://www.openssl.org/source/openssl-0.9.8d.tar.gz
+wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.11.tar.gz
+
+Let's see how current those urls are.
+
+try this:
+
+cd /oracle/software/
+wget ftp://ftp.cwru.edu/pub/bash/readline-6.0.tar.gz
+wget http://www.openssl.org/source/openssl-0.9.8j.tar.gz
+wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.11.1.tar.gz
+
+I had bumped into this also.
+
+I found the page listed below to be a big help:
+
+http://blog.mondragon.cc/articles/2007/02/03/compiling-ruby-1-8-5-w-openssl-on-debian-etch-testing-and-freebsd-in-home
+
+For ruby-1.8.7, here is a list of shell commands which got me moving in the right direction:
+
+mkdir /rho/
+chown oracle /rho/
+cd /oracle/software/
+wget ftp://ftp.cwru.edu/pub/bash/readline-6.0.tar.gz
+wget http://www.openssl.org/source/openssl-0.9.8j.tar.gz
+wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.11.1.tar.gz
+wget ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.bz2
+
+tar zxf readline-6.0.tar.gz
+tar zxf openssl-0.9.8j.tar.gz
+tar zxf libiconv-1.11.1.tar.gz
+tar jxf ruby-1.8.7-p72.tar.bz2
+
+cd openssl-0.9.8j
+./config --prefix=/rho --openssldir=/rho/openssl shared
+make
+make test
+make install
+
+cd ..
+cd readline-6.0
+./configure --prefix=/rho
+make
+make install
+
+cd ..
+cd libiconv-1.11.1
+./configure --prefix=/rho
+make
+make install
+
+cd ..
+cd ruby-1.8.7-p72
+./configure --prefix=/rho --with-static-linked-ext --with-iconv-dir=/rho --with-openssl-dir=/rho --with-readline-dir=/rho
+make
+make install
+
+find /rho -name openssl.rb -print
+
+

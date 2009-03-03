@@ -1,0 +1,321 @@
+/pt/b/rho/notes2009_0225.txt
+
+git-hub:
+  - http://github.com/rhomobile
+
+google-group:
+  - http://groups.google.com/group/rhomobile/
+
+misc-discussion:
+  - http://www.rubyinside.com/rhodes-develop-full-iphone-rim-and-symbian-apps-using-ruby-1475.html
+
+I see 2 tutorials:
+  - http://wiki.rhomobile.com//index.php?title=Mobilizing_Your_Application_with_Rhomobile
+  - http://rubyonmobile.wordpress.com/
+
+I'll start with the first.
+
+The two primary relevant tools are Rhodes, a Rails-like Ruby-based
+microframework for building locally executing mobile applications, and
+RhoSync, which provides client and server sync components for
+maintaining current copies of backend app information on your
+device. This article describes how to use Rhodes and RhoSync to build
+such mobile apps.
+
+- application generator called RhoGen which generates a basic Create-Read-Update-Delete controller and associated views for specified data objects
+
+- RhoSync has been written to interact with web services versus
+  databases. In this way, it is particularly suited to integrate with
+  Software As A Service (SAAS) applications such as SugarCRM,
+  SalesForce, Siebel
+
+- http://github.com/rhomobile/rhosync/tree/master
+
+- I need version 2.2.2 of Ruby on Rails installed
+
+- what do I have on z?
+  - I see 2.1 and 1.2.3
+
+- I'll work on installing a copy of 2.2.2 on z ( and then on the xp )
+  - First install ruby 1.8.7 here: /rho
+  - mkdir /rho; chown phor /rho
+  - wget ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.bz2
+  - tar jxf ruby-1.8.7-p72.tar.bz2
+  - cd ruby-1.8.7-p72
+  - vi ext/Setup (uncomment: openssl,readline,zlib)
+  - ./configure --prefix=/rho
+  - make
+  - make install
+  - create a 1-line file (in /rho/.rho) and then dot-it: export PATH=/rho/bin:${PATH}:.
+  - wget gems: wget http://rubyforge.org/frs/download.php/45905/rubygems-1.3.1.tgz
+  - tar zxf rubygems-1.3.1.tgz
+  - cd rubygems-1.3.1; ruby setup.rb  --no-rdoc --no-ri
+  - gem install rails --no-rdoc --no-ri
+
+- Install sqlite3
+  - wget  http://www.sqlite.org/sqlite-amalgamation-3.6.11.tar.gz
+  - tar zxf sqlite-amalgamation-3.6.11.tar.gz
+  - cd sqlite-3.6.11
+  - ./configure --prefix=/rho
+  - make
+  - make install
+  - gem install sqlite3-ruby -- --with-sqlite3-dir=/rho
+
+- Install Oracle
+  - register account at http://otn.oracle.com: http://www.oracle.com/admin/account/index.html
+  - download Oracle: http://www.oracle.com/technology/software/products/database/index.html
+  - Follow instructions:
+    - http://www.oracle.com/technology/obe/11gr1_db/install/dbinst/dbinst.htm
+    - http://www.oracle.com/technology/tech/linux/install/index.html
+    - http://www.oracle.com/pls/db111/portal.portal_db?selected=11
+  - Install gem for oracle:
+    - gem install activerecord-oracle_enhanced-adapter
+
+- Install rspec-rails and rake
+  - gem install rspec-rails rake --no-rdoc --no-ri
+
+- git rhosync
+  - git clone git://github.com/rhomobile/rhosync.git
+
+- enhance the git clone:
+  - mkdir log; touch log/development.log
+  - rake gems:install
+
+
+Hello Rhomobile People.
+
+Today I am walking through the tutorial here:
+  - http://www.rubyinside.com/rhodes-develop-full-iphone-rim-and-symbian-apps-using-ruby-1475.html
+
+I followed these steps:
+
+  - mkdir /rho; chown phor /rho
+  - wget ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.bz2
+  - tar jxf ruby-1.8.7-p72.tar.bz2
+  - cd ruby-1.8.7-p72
+  - vi ext/Setup and uncomment these lines:
+bigdecimal
+curses
+digest
+digest/md5
+digest/rmd160
+digest/sha1
+digest/sha2
+iconv
+openssl
+readline
+socket
+strscan
+thread
+zlib
+
+
+  - ./configure --prefix=/rho
+  - make
+  - make install
+  - create a 1-line file (in /rho/.rho) and then dot-it: export PATH=/rho/bin:${PATH}:.
+
+I saw this:
+
+$ /rho/bin/ruby -v
+ruby 1.8.7 (2008-08-11 patchlevel 72) [x86_64-linux]
+
+Next, I installed gems:
+
+  - wget gems: wget http://rubyforge.org/frs/download.php/45905/rubygems-1.3.1.tgz
+  - tar zxf rubygems-1.3.1.tgz
+  - cd rubygems-1.3.1; ruby setup.rb  --no-rdoc --no-ri
+
+I saw this:
+
+$ /rho/bin/gem -v
+1.3.1
+
+Next, I installed rails:
+
+gem install rails --no-rdoc --no-ri
+
+I saw this:
+
+$ /rho/bin/rails -v
+Rails 2.2.2
+
+Next, I did this:
+
+$ gem install rspec-rails rake --no-rdoc --no-ri
+
+I saw this:
+
+$ /rho/bin/gem list
+
+*** LOCAL GEMS ***
+
+actionmailer (2.2.2)
+actionpack (2.2.2)
+activerecord (2.2.2)
+activeresource (2.2.2)
+activesupport (2.2.2)
+rails (2.2.2)
+rake (0.8.3)
+rspec (1.1.12)
+rspec-rails (1.1.12)
+
+
+Next, I did this:
+
+cd  ~/software/
+git clone git://github.com/rhomobile/rhosync.git
+mkdir log; touch log/development.log
+/rho/bin/rake gems:install
+
+I saw this:
+
+(in /phor/software/rhosync)
+rake aborted!
+no such file to load -- openssl
+(See full trace by running task with --trace)
+
+To me,
+It looks like openssl.rb is missing somewhere.
+
+I assume it should be under /rho which is where I installed ruby.
+
+I'm on ubuntu-linux and I do see openssl development packages inside of my OS:
+
+$ apt-cache search libssl
+cl-plus-ssl - A simple Common Lisp interface to OpenSSL
+dcmtk - The OFFIS DICOM toolkit command line utilities
+libdcmtk1 - The OFFIS DICOM toolkit runtime libraries
+libdcmtk1-dev - The OFFIS DICOM toolkit development libraries and headers
+libssl-ocaml - OCaml bindings for OpenSSL
+libssl-ocaml-dev - OCaml bindings for OpenSSL
+libssl-dev - SSL development libraries, header files and documentation
+libssl0.9.8 - SSL shared libraries
+libssl0.9.8-dbg - Symbol tables for libssl and libcrypto
+
+
+ooooooooo
+
+ruby-talkers,
+
+I've bumped into an issue with ruby and ssl.
+
+I'm trying to run a rake command which aborts because it cannot find openssl.rb.
+
+
+I followed these steps:
+
+  - mkdir /rho; chown phor /rho
+  - wget ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.bz2
+  - tar jxf ruby-1.8.7-p72.tar.bz2
+  - cd ruby-1.8.7-p72
+  - vi ext/Setup and uncomment these lines:
+bigdecimal
+curses
+digest
+digest/md5
+digest/rmd160
+digest/sha1
+digest/sha2
+iconv
+openssl
+readline
+socket
+strscan
+thread
+zlib
+
+
+  - ./configure --prefix=/rho
+  - make
+  - make install
+  - create a 1-line file (in /rho/.rho) and then dot-it: export PATH=/rho/bin:${PATH}:.
+
+I saw this:
+
+$ /rho/bin/ruby -v
+ruby 1.8.7 (2008-08-11 patchlevel 72) [x86_64-linux]
+
+Next, I installed gems:
+
+  - wget gems: wget http://rubyforge.org/frs/download.php/45905/rubygems-1.3.1.tgz
+  - tar zxf rubygems-1.3.1.tgz
+  - cd rubygems-1.3.1; ruby setup.rb  --no-rdoc --no-ri
+
+I saw this:
+
+$ /rho/bin/gem -v
+1.3.1
+
+Next, I installed rails:
+
+gem install rails --no-rdoc --no-ri
+
+I saw this:
+
+$ /rho/bin/rails -v
+Rails 2.2.2
+
+Next, I did this:
+
+$ gem install rspec-rails rake --no-rdoc --no-ri
+
+I saw this:
+
+$ /rho/bin/gem list
+
+*** LOCAL GEMS ***
+
+actionmailer (2.2.2)
+actionpack (2.2.2)
+activerecord (2.2.2)
+activeresource (2.2.2)
+activesupport (2.2.2)
+rails (2.2.2)
+rake (0.8.3)
+rspec (1.1.12)
+rspec-rails (1.1.12)
+
+
+Next, I did this:
+
+cd  ~/software/
+git clone git://github.com/rhomobile/rhosync.git
+mkdir log; touch log/development.log
+/rho/bin/rake gems:install
+
+I saw this:
+
+(in /phor/software/rhosync)
+rake aborted!
+no such file to load -- openssl
+(See full trace by running task with --trace)
+
+To me,
+It looks like openssl.rb is missing somewhere.
+
+I assume it should be under /rho which is where I installed ruby.
+
+I'm on ubuntu-linux and I do see openssl development packages inside of my OS:
+
+$ apt-cache search libssl
+cl-plus-ssl - A simple Common Lisp interface to OpenSSL
+dcmtk - The OFFIS DICOM toolkit command line utilities
+libdcmtk1 - The OFFIS DICOM toolkit runtime libraries
+libdcmtk1-dev - The OFFIS DICOM toolkit development libraries and headers
+libssl-ocaml - OCaml bindings for OpenSSL
+libssl-ocaml-dev - OCaml bindings for OpenSSL
+libssl-dev - SSL development libraries, header files and documentation
+libssl0.9.8 - SSL shared libraries
+libssl0.9.8-dbg - Symbol tables for libssl and libcrypto
+
+Also, I see this:
+
+$ apt-cache search  libopenssl-ruby
+libopenssl-ruby - OpenSSL interface for Ruby
+libopenssl-ruby1.9 - OpenSSL interface for Ruby 1.9
+ruby1.8 - Interpreter of object-oriented scripting language Ruby 1.8
+libopenssl-ruby1.8 - OpenSSL interface for Ruby 1.8
+
+Clues anyone?
+
