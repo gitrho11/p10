@@ -1,0 +1,157 @@
+/pt/c3/rho/notes2009_0303.txt
+
+Yesterday:
+  - Adam
+  - Lars?
+  - Vidal
+  - Pierre (in at 8)
+
+Lots of offices but they only rent 2
+
+ok to park in back.
+
+Met Vladimir (Vlad?).
+
+Adam got me some possible work with aeroprise near 101 and shoreline:
+  - Andrew Hogg 408 390 0686 , 1023 North Shoreline Boulevard suite 150, 94040 (Andrew not Andy)
+
+
+They want to do a mobile remedy.
+
+arch:
+  - I do backend work.
+  - Probably best to keep rhosync simple and put biz logic in another rails service
+  - Vlad will do front-end
+
+interview:
+  - Met with Andrew and then CEO Dan Turchin
+  - The project looks complex.  We will probably expand out rhosync and it needs to talk with remedy.
+
+ooooooooooo ooooooooo
+
+Subject: Re: Dan Bikle/Andrew Hogg introduction
+From: Dan Bikle <bikle@bikle.com>
+To: Andrew Hogg <ahogg@aeroprise.com>
+Cc: Adam Blum <adam@rhomobile.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Andrew,
+
+I want to visit you at your office any day this week.
+
+I'm free during the hours of 10:30am to 7pm.
+
+Please pick a time which is convenient for you.
+
+Sincerely,
+
+Dan Bikle
+bikle@bikle.com
+
+
+On 3/3/09, Adam Blum <adam@rhomobile.com> wrote:
+> Guys,
+>
+> Sorry I sent this to dan@bikle.com.  It should be bikle@bikle.com.
+>
+> - Adam
+>
+>
+> On 3/2/09 5:32 PM, "Andrew Hogg" <ahogg@aeroprise.com> wrote:
+>
+>> Adam,
+>>
+>> Thanks for the intro =AD much appreciated.
+>>
+>> Dan,
+>> I just joined Aeroprise about 3 weeks ago and am running hard and fast t=
+o
+>> get
+>> a new mobile app/server/BMC Remedy solution out the door by August. We a=
+re
+>> looking for someone to design and code the server portion, integrating
+>> with
+>> the RhoSync server, which in turn will connect to a mobile app written i=
+n
+>> Rhodes. The server will in turn connect to the BMC Remedy back-end using
+>> Remedy=B9s APIs =AD either in C or via their MidTier web architecture.
+>>
+>> You come recommended by Adam, and I=B9d like to get to meet you face to =
+face
+>> for
+>> about an hour ASAP. Timeline wise I would like to make a decision on all
+>> the
+>> actors by the end of this week =AD and the server is the only one left. =
+I=B9m
+>> open
+>> all day tomorrow after 9am. Do you have time tomorrow to come by (we=B9r=
+e in
+>> Mountain View, right by Shoreline and 101)?
+>>
+>>
+>> Thanks,
+>>
+>>
+>> Andrew
+>>
+>>
+>> From: Adam Blum [mailto:adam@rhomobile.com]
+>> Sent: Monday, March 02, 2009 5:20 PM
+>> To: Andrew Hogg; dan@bikle.com
+>> Subject: Dan Bikle/Andrew Hogg introduction
+>>
+>> Andrew,
+>>
+>> Meet Dan Bikle.  I think he could be a good resource for the server side
+>> of
+>> your planned app.   I hope you guys get a chance to meet up soon.
+>>
+>> Regards,
+>>
+>> - Adam
+>>
+>>
+>> --
+>> Adam Blum
+>> CEO
+>> Rhomobile, Inc.
+>> 10950 North Blaney Avenue
+>> Cupertino CA 95014
+>> 408.813.0180
+>> http://www.rhomobile.com
+>>
+>
+>
+
+
+ooooooooooo ooooooooo
+
+ooooooooooo ooooooooo
+powwow with Vidal:
+  - rhosync has rails in vendor
+  - collaboration tools:
+    - skype-beta 2.8 has screen sharing
+    - Pierre: we have webex
+    - google-talk has screen sharing
+
+ooooooooooo ooooooooo
+ooooooooooo ooooooooo
+
+Now install:
+  - bitnamis:
+    - /pt/bnami/ruby/bin/
+    - /pt/bnami/git/bin/
+  - git
+  - iphone sdk
+  - work through the tutorial
+
+
+ooooooooooo ooooooooo
+
+
+I see 2 tutorials:
+  - http://wiki.rhomobile.com//index.php?title=Mobilizing_Your_Application_with_Rhomobile
+  - http://rubyonmobile.wordpress.com/
+
+ooooooooooo ooooooooo
