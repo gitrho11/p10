@@ -1,0 +1,1446 @@
+/pt/c3/rho/p10/notes2009_0304.txt
+
+next:
+  rake db:bootstrap
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ rake db:bootstrap
+(in /Users/maco/pt/customers3/rho/rhosync)
+-- create_table("administrations", {:force=>true})
+   -> 0.1283s
+-- create_table("apps", {:force=>true})
+   -> 0.0032s
+-- create_table("client_maps", {:force=>true, :id=>false})
+   -> 0.0026s
+-- add_index("client_maps", ["client_id", "object_value_id"], {:name=>"client_map_c_id_ov_id"})
+   -> 0.0034s
+-- add_index("client_maps", ["client_id"], {:name=>"client_map_c_id"})
+   -> 0.0027s
+-- create_table("clients", {:force=>true, :id=>false})
+   -> 0.0039s
+-- add_index("clients", ["client_id"], {:name=>"index_clients_on_client_id"})
+   -> 0.0032s
+-- create_table("credentials", {:force=>true})
+   -> 0.0040s
+-- create_table("memberships", {:force=>true})
+   -> 0.0045s
+-- create_table("object_values", {:force=>true})
+   -> 0.0037s
+-- add_index("object_values", ["source_id", "user_id", "update_type"], {:name=>"by_source_user_type"})
+   -> 0.0030s
+-- create_table("source_logs", {:force=>true})
+   -> 0.0048s
+-- create_table("sources", {:force=>true})
+   -> 0.0045s
+-- create_table("users", {:force=>true})
+   -> 0.0050s
+-- add_index("users", ["login"], {:unique=>true, :name=>"index_users_on_login"})
+   -> 0.0036s
+-- initialize_schema_migrations_table()
+   -> 0.0064s
+-- assume_migrated_upto_version(20090219230647)
+   -> 0.0981s
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+that looks good.
+
+mongrel install next:
+  gem install mongrel
+
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ gem install mongrel
+Building native extensions.  This could take a while...
+Building native extensions.  This could take a while...
+Successfully installed gem_plugin-0.2.3
+Successfully installed daemons-1.0.10
+Successfully installed fastthread-1.0.1
+Successfully installed cgi_multipart_eof_fix-2.5.0
+Successfully installed mongrel-1.1.5
+5 gems installed
+Installing ri documentation for gem_plugin-0.2.3...
+Installing ri documentation for daemons-1.0.10...
+Installing ri documentation for fastthread-1.0.1...
+
+No definition for dummy_dump
+
+No definition for dummy_dump
+
+No definition for rb_queue_marshal_load
+
+No definition for rb_queue_marshal_dump
+Installing ri documentation for cgi_multipart_eof_fix-2.5.0...
+Installing ri documentation for mongrel-1.1.5...
+Installing RDoc documentation for gem_plugin-0.2.3...
+Installing RDoc documentation for daemons-1.0.10...
+Installing RDoc documentation for fastthread-1.0.1...
+
+No definition for dummy_dump
+
+No definition for dummy_dump
+
+No definition for rb_queue_marshal_load
+
+No definition for rb_queue_marshal_dump
+Installing RDoc documentation for cgi_multipart_eof_fix-2.5.0...
+Installing RDoc documentation for mongrel-1.1.5...
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+that looks good.
+
+next:
+  script/server
+
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ script/server
+=> Booting Mongrel (use 'script/server webrick' to force WEBrick)
+=> Rails 2.2.2 application starting on http://0.0.0.0:3000
+=> Call with -d to detach
+=> Ctrl-C to shutdown server
+** Starting Mongrel listening at 0.0.0.0:3000
+** Starting Rails with development environment...
+** Rails loaded.
+** Loading any Rails specific GemPlugins
+** Signals ready.  TERM => stop.  USR2 => restart.  INT => stop (no restart).
+** Rails signals registered.  HUP => reload (without restart).  It might not work well.
+** Mongrel 1.1.5 available at 0.0.0.0:3000
+** Use CTRL-C to stop.
+
+
+Processing AppsController#index (for 127.0.0.1 at 2009-03-04 10:21:19) [GET]
+Redirected to /session/new
+Filter chain halted as [:login_required] rendered_or_redirected.
+Completed in 1ms (DB: 0) | 302 Found [http://localhost/]
+
+
+Processing SessionsController#new (for 127.0.0.1 at 2009-03-04 10:21:20) [GET]
+Rendering sessions/new
+Completed in 5ms (View: 3, DB: 0) | 200 OK [http://localhost/session/new]
+
+
+That looks good.
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+People,
+
+I just walked through the initial install of rhosync.
+
+I see a message which concerns me a bit.
+
+I posted the message here:
+  http://rubyforge.org/forum/forum.php?thread_id=31903&forum_id=2129
+
+I'll post it below with the question: "Should I worry about it?"
+
+
+mac3:/pt/c3/rho maco$ cd rhosync/
+mac3:/pt/c3/rho/rhosync maco$ ll
+total 120
+drwxr-xr-x  19 maco  staff    646 Mar  3 17:19 ./
+drwxr-xr-x   7 maco  staff    238 Mar  3 21:06 ../
+drwxr-xr-x  13 maco  staff    442 Mar  3 17:19 .git/
+-rw-r--r--   1 maco  staff     45 Mar  3 17:19 .gitignore
+-rw-r--r--   1 maco  staff    151 Mar  3 17:19 Capfile
+-rw-r--r--   1 maco  staff  35127 Mar  3 17:19 LICENSE
+-rw-r--r--   1 maco  staff   9565 Mar  3 17:19 README.textile
+-rw-r--r--   1 maco  staff    306 Mar  3 17:19 Rakefile
+drwxr-xr-x   6 maco  staff    204 Mar  3 17:19 app/
+drwxr-xr-x  11 maco  staff    374 Mar  3 17:19 config/
+drwxr-xr-x   4 maco  staff    136 Mar  3 21:12 db/
+drwxr-xr-x   4 maco  staff    136 Mar  3 17:19 doc/
+drwxr-xr-x  35 maco  staff   1190 Mar  3 17:19 lib/
+drwxr-xr-x  13 maco  staff    442 Mar  3 17:19 public/
+drwxr-xr-x  15 maco  staff    510 Mar  3 17:19 script/
+drwxr-xr-x   9 maco  staff    306 Mar  3 17:19 spec/
+drwxr-xr-x   8 maco  staff    272 Mar  3 17:19 stories/
+drwxr-xr-x   4 maco  staff    136 Mar  3 17:19 test/
+drwxr-xr-x   5 maco  staff    170 Mar  3 17:19 vendor/
+mac3:/pt/c3/rho/rhosync maco$ mkdir -p log; touch log/development.log
+mac3:/pt/c3/rho/rhosync maco$ rake gems:install
+rake gems:install
+(in /Users/maco/pt/customers3/rho/rhosync)
+gem install libxml-ruby
+
+Enclosing class/module 'cXMLHtmlParser' for module Options not known
+
+Enclosing class/module 'cXMLParser' for module Options not known
+
+No definition for rb_class_new_instance
+
+Enclosing class/module 'cXMLHtmlParser' for module Options not known
+
+Enclosing class/module 'cXMLParser' for module Options not known
+
+No definition for rb_class_new_instance
+Building native extensions.  This could take a while...
+Successfully installed libxml-ruby-0.9.8
+1 gem installed
+Installing ri documentation for libxml-ruby-0.9.8...
+Installing RDoc documentation for libxml-ruby-0.9.8...
+mac3:/pt/c3/rho/rhosync maco$
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Good message from Michael full information about my context:
+
+good luck!  recommendation is to get rhodes app running with sample
+(SugarCRM) today using new build environment.  You don't even need
+libxml-ruby yet (that is for RhoSync).  You can run the app and
+connect to the hosted server rhosyncdev which feeds the Lighthouse and
+RhoSugarCRM apps now
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+wiki:
+
+
+If you want to use the sample application and sources that we ship with, just register an account called "admin" with your password of choice.
+
+You will then see the apps "owned" by "admin": SugarCRM and Siebel.
+
+Clicking on SugarCRM will show you the sources that have been defined for SugarCRM: Accounts, Cases and Employees.
+
+From the RhoSync screen you can also see the data there, which is using our sample SugarCRM instance.
+
+You will need to change the URL for the SugarCRM WSDL, and the login and password however to point to your own SugarCRM instance.
+
+For example the WSDL could be
+"http://yourinstance.sugarondemand.com/soap.php?wsdl".
+
+The sections below describe how to set up source adapters for other backends.
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+I tried to register admin/admin1 here:
+  http://localhost:3000/session/new
+
+result:
+Sign up as a new user
+
+1 error prohibited this user from being saved
+
+There were problems with the following fields:
+
+Login has already been taken
+
+Here is what I see:
+
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ script/server
+=> Booting Mongrel (use 'script/server webrick' to force WEBrick)
+=> Rails 2.2.2 application starting on http://0.0.0.0:3000
+=> Call with -d to detach
+=> Ctrl-C to shutdown server
+** Starting Mongrel listening at 0.0.0.0:3000
+** Starting Rails with development environment...
+** Rails loaded.
+** Loading any Rails specific GemPlugins
+** Signals ready.  TERM => stop.  USR2 => restart.  INT => stop (no restart).
+** Rails signals registered.  HUP => reload (without restart).  It might not work well.
+** Mongrel 1.1.5 available at 0.0.0.0:3000
+** Use CTRL-C to stop.
+
+
+Processing AppsController#index (for 127.0.0.1 at 2009-03-04 10:21:19) [GET]
+Redirected to /session/new
+Filter chain halted as [:login_required] rendered_or_redirected.
+Completed in 1ms (DB: 0) | 302 Found [http://localhost/]
+
+
+Processing SessionsController#new (for 127.0.0.1 at 2009-03-04 10:21:20) [GET]
+Rendering sessions/new
+Completed in 5ms (View: 3, DB: 0) | 200 OK [http://localhost/session/new]
+
+
+Processing UsersController#new (for 127.0.0.1 at 2009-03-04 10:57:21) [GET]
+Rendering users/new
+Completed in 11ms (View: 7, DB: 0) | 200 OK [http://localhost/users/new]
+
+
+Processing UsersController#create (for 127.0.0.1 at 2009-03-04 10:58:05) [POST]
+  Parameters: {"commit"=>"Sign up", "authenticity_token"=>"0c7ceb120184f43ec647c04b1b0598e15c9a9b83", "user"=>{"password_confirmation"=>"admin", "password"=>"admin", "login"=>"admin", "email"=>"dan.bikle@gmail.com"}}
+Cookie set: auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
+  [4;36;1mUser Exists (0.3ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE ("users"."login" = 'admin') LIMIT 1[0m
+  [4;35;1mUser Exists (0.1ms)[0m   [0mSELECT "users".id FROM "users" WHERE ("users"."email" = 'dan.bikle@gmail.com') LIMIT 1[0m
+Rendering users/new
+Completed in 406ms (View: 3, DB: 0) | 200 OK [http://localhost/register]
+
+
+Processing UsersController#create (for 127.0.0.1 at 2009-03-04 10:58:22) [POST]
+  Parameters: {"commit"=>"Sign up", "authenticity_token"=>"0c7ceb120184f43ec647c04b1b0598e15c9a9b83", "user"=>{"password_confirmation"=>"admin1", "password"=>"admin1", "login"=>"admin", "email"=>"dan.bikle@gmail.com"}}
+Cookie set: auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
+  [4;36;1mUser Exists (0.2ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE ("users"."login" = 'admin') LIMIT 1[0m
+  [4;35;1mUser Exists (0.2ms)[0m   [0mSELECT "users".id FROM "users" WHERE ("users"."email" = 'dan.bikle@gmail.com') LIMIT 1[0m
+Rendering users/new
+Completed in 14ms (View: 4, DB: 0) | 200 OK [http://localhost/register]
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+I blasted the db; then rake db:migrate:
+
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ sqlite3 db/development.sqlite3
+SQLite version 3.5.1
+Enter ".help" for instructions
+sqlite> select * from users;
+select * from users;
+1|anonymous|anonymous|anonymous@rhomobile.com|60f34fbfd74fd167441847fbf1972bb7618171b2||2009-03-04 19:07:54|2009-03-04 19:07:54||
+2|admin||admin@rhomobile.com|289fcd8b9d18df17458719a78ac325d0db44dd27|3792f1b046d084806a724f9e5c95feb4a5fff204|2009-03-04 19:07:54|2009-03-04 19:07:54||
+sqlite>
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Team,
+
+I'm curious about the admin account in rhosync.
+
+In the wiki, I see instructions telling me to register the admin account (which I assume means "create" the admin account):
+  http://wiki.rhomobile.com/index.php/Mobilizing_Your_Application_with_Rhomobile#Install_the_RhoSync_Server
+
+But, after a rake db:bootstrap, I see the admin account has been created already in the database:
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ sqlite3 db/development.sqlite3
+SQLite version 3.5.1
+Enter ".help" for instructions
+sqlite> select * from users;
+select * from users;
+1|anonymous|anonymous|anonymous@rhomobile.com|60f34fbfd74fd167441847fbf1972bb7618171b2||2009-03-04 19:07:54|2009-03-04 19:07:54||
+2|admin||admin@rhomobile.com|289fcd8b9d18df17458719a78ac325d0db44dd27|3792f1b046d084806a724f9e5c95feb4a5fff204|2009-03-04 19:07:54|2009-03-04 19:07:54||
+sqlite>
+
+Did I bump into a documentation bug or is my conceptual understanding off the mark?
+
+--Dan
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+wiki:
+
+There are two ways of creating code for source adapters. For simpler
+web service interfaces (such as SugarCRM's shown below) its usually
+easy enough to just edit the code in the provided web page form. For
+more complex code you may want to just provide RhoSync with a
+full-fledged class. To do this, just provide the name of the Source
+Adapter Class in the form for a source adapter.
+
+Generating A Source Adapter Class
+
+To do this, you need the RhoGen application generator. You can get this by getting the Rhodes gem from RubyForge
+
+sudo gem install rhodes
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+I see:
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ which gem
+which gem
+/pt/r1/bin/gem
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ gem -v
+gem -v
+1.3.1
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$  gem install rhodes
+ gem install rhodes
+Building native extensions.  This could take a while...
+Building native extensions.  This could take a while...
+Building native extensions.  This could take a while...
+PostInstall.txt
+Successfully installed sqlite3-ruby-1.2.3
+Successfully installed rcov-0.8.1.2.0
+Successfully installed highline-1.5.0
+Successfully installed diff-lcs-1.1.2
+Successfully installed extlib-0.9.10
+Successfully installed templater-0.5.0
+Successfully installed rubyforge-1.0.3
+Successfully installed hoe-1.9.0
+Successfully installed rubigen-1.5.2
+Successfully installed RedCloth-4.1.9
+Successfully installed syntax-1.0.0
+Successfully installed newgem-1.2.3
+Successfully installed rhodes-0.3.0
+13 gems installed
+Installing ri documentation for sqlite3-ruby-1.2.3...
+Installing ri documentation for rcov-0.8.1.2.0...
+Installing ri documentation for highline-1.5.0...
+Installing ri documentation for diff-lcs-1.1.2...
+Installing ri documentation for templater-0.5.0...
+Installing ri documentation for rubyforge-1.0.3...
+Installing ri documentation for hoe-1.9.0...
+Installing ri documentation for rubigen-1.5.2...
+Installing ri documentation for RedCloth-4.1.9...
+Installing ri documentation for syntax-1.0.0...
+Installing ri documentation for newgem-1.2.3...
+Installing ri documentation for rhodes-0.3.0...
+Installing RDoc documentation for sqlite3-ruby-1.2.3...
+Installing RDoc documentation for rcov-0.8.1.2.0...
+Installing RDoc documentation for highline-1.5.0...
+Installing RDoc documentation for diff-lcs-1.1.2...
+Installing RDoc documentation for templater-0.5.0...
+Installing RDoc documentation for rubyforge-1.0.3...
+Installing RDoc documentation for hoe-1.9.0...
+Installing RDoc documentation for rubigen-1.5.2...
+Installing RDoc documentation for RedCloth-4.1.9...
+Installing RDoc documentation for syntax-1.0.0...
+Installing RDoc documentation for newgem-1.2.3...
+Installing RDoc documentation for rhodes-0.3.0...
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+That looks good!
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+wiki:
+
+Then run the source generator with the name of the source adapter class. For example (pick a name for your source adapter to replace SugarAccounts below):
+
+rhogen source SugarAccounts
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+I saw:
+
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ rhogen source SugarAccounts
+Generating with source generator:
+[31m  [CONFLICT][0m  lib/sugar_accounts.rb
+1. skip
+2. overwrite
+3. render
+4. diff
+5. abort
+How do you wish to proceed with this file?
+
+hmmmm
+
+The file is already there?
+
+Lets see:
+
+  /pt/c3/rho/rhosync/lib:
+  total used in directory 288 available 202514256
+  drwxr-xr-x  35 maco  staff  1190 Mar  3 17:19 .
+  drwxr-xr-x  21 maco  staff   714 Mar  4 10:18 ..
+  -rw-r--r--   1 maco  staff  1705 Mar  3 17:19 account.rb
+  -rw-r--r--   1 maco  staff  6673 Mar  3 17:19 authenticated_system.rb
+  -rw-r--r--   1 maco  staff   751 Mar  3 17:19 authenticated_test_helper.rb
+  -rw-r--r--   1 maco  staff  1141 Mar  3 17:19 basecamp_companies.rb
+  -rw-r--r--   1 maco  staff  1468 Mar  3 17:19 basecamp_people.rb
+  -rw-r--r--   1 maco  staff  1018 Mar  3 17:19 basecamp_projects.rb
+  -rw-r--r--   1 maco  staff  2467 Mar  3 17:19 lighthouse_milestones.rb
+  -rw-r--r--   1 maco  staff  3559 Mar  3 17:19 lighthouse_projects.rb
+  -rw-r--r--   1 maco  staff  3421 Mar  3 17:19 lighthouse_sample_readme.txt
+  -rw-r--r--   1 maco  staff   462 Mar  3 17:19 lighthouse_settings.rb
+  -rw-r--r--   1 maco  staff  6001 Mar  3 17:19 lighthouse_ticket_versions.rb
+  -rw-r--r--   1 maco  staff  6871 Mar  3 17:19 lighthouse_tickets.rb
+  -rw-r--r--   1 maco  staff  2953 Mar  3 17:19 lighthouse_users.rb
+  -rw-r--r--   1 maco  staff  1735 Mar  3 17:19 rest_api_helpers.rb
+  drwxr-xr-x   6 maco  staff   204 Mar  3 17:19 siebel
+  -rw-r--r--   1 maco  staff  4506 Mar  3 17:19 siebel_service_requests.rb
+  -rw-r--r--   1 maco  staff   674 Mar  3 17:19 source_adapter.rb
+  -rw-r--r--   1 maco  staff   983 Mar  3 17:19 sugar_accounts.rb
+  -rw-r--r--   1 maco  staff  3406 Mar  3 17:19 sugar_adapter.rb
+  -rw-r--r--   1 maco  staff   569 Mar  3 17:19 sugar_calls.rb
+  -rw-r--r--   1 maco  staff   649 Mar  3 17:19 sugar_campaigns.rb
+  -rw-r--r--   1 maco  staff   527 Mar  3 17:19 sugar_cases.rb
+  -rw-r--r--   1 maco  staff  1240 Mar  3 17:19 sugar_contacts.rb
+  -rw-r--r--   1 maco  staff   963 Mar  3 17:19 sugar_employees.rb
+  -rw-r--r--   1 maco  staff  1306 Mar  3 17:19 sugar_leads.rb
+  -rw-r--r--   1 maco  staff   574 Mar  3 17:19 sugar_meetings.rb
+  -rw-r--r--   1 maco  staff   670 Mar  3 17:19 sugar_opportunities.rb
+  -rw-r--r--   1 maco  staff  1021 Mar  3 17:19 sugar_products.rb
+  -rw-r--r--   1 maco  staff  1414 Mar  3 17:19 sugar_quotes.rb
+  -rw-r--r--   1 maco  staff   233 Mar  3 17:19 sugar_teams.rb
+  -rw-r--r--   1 maco  staff   865 Mar  3 17:19 sugar_users.rb
+  drwxr-xr-x   4 maco  staff   136 Mar  3 17:19 tasks
+  -rw-r--r--   1 maco  staff  4863 Mar  3 17:19 wikipedia.rb
+
+whoa, lots of stuff.
+
+I think I have better context now.
+
+It seems that some of the info in the wiki page was used to build the current version of rhosync in github.
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+I tried this:
+  rhogen source BikleAdaptor10
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ rhogen source BikleAdaptor10
+Generating with source generator:
+[32m     [ADDED][0m  lib/bikle_adaptor10.rb
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+class BikleAdaptor10 < SourceAdapter
+
+  def initialize(source)
+    super(source)
+  end
+
+  def login
+    #TODO: Write some code here
+    # use the variable @source.login and @source.password
+    raise "Please provide some code to perform an authenticated login to the backend application"
+  end
+
+  def query
+    # TODO: write some code here
+    raise "Please provide some code to read records from the backend application"
+  end
+
+  def sync
+    # usually this generic code does the job
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        o=ObjectValue.new
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+  def create(name_value_list)
+    #TODO: write some code here
+    # the backend application will provide the object hash key and corresponding value
+    raise "Please provide some code to create a single object in the backend application using the hash values in name_value_list"
+  end
+
+  def update(name_value_list)
+    #TODO: write some code here
+    # be sure to have a hash key and value for "object"
+    raise "Please provide some code to update a single object in the backend application using the hash values in name_value_list"
+  end
+
+  def delete(name_value_list)
+    #TODO: write some code here if applicable
+    # be sure to have a hash key and value for "object"
+    # for now, we'll say that its OK to not have a delete operation
+    # raise "Please provide some code to delete a single object in the backend application using the hash values in name_value_list"
+  end
+
+  def logoff
+    #TODO: write some code here if applicable
+    # no need to do a raise here
+  end
+end
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+It looks very much like a controller.
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+wiki:
+  Note that you don't need to use the source generator. You can just create a Ruby file and place it into your lib directory. The class name must match that identified on the Source Adapter form.
+  q: what is the source adapter form?
+  a: maybe its in here
+  /pt/c3/rho/rhosync/app/views/sources:
+  total used in directory 120 available 202512736
+  drwxr-xr-x  19 maco  staff   646 Mar  3 17:19 .
+  drwxr-xr-x   8 maco  staff   272 Mar  3 17:19 ..
+  -rw-r--r--   1 maco  staff    30 Mar  3 17:19 activation.erb
+  -rw-r--r--   1 maco  staff     0 Mar  3 17:19 askfortoken.html.erb
+  -rw-r--r--   1 maco  staff   206 Mar  3 17:19 attributes.html.erb
+  -rw-r--r--   1 maco  staff  1689 Mar  3 17:19 edit.html.erb
+  -rw-r--r--   1 maco  staff   407 Mar  3 17:19 editobject.rhtml
+  -rw-r--r--   1 maco  staff  1122 Mar  3 17:19 index.html.erb
+  -rw-r--r--   1 maco  staff  1258 Mar  3 17:19 new.html.erb
+  -rw-r--r--   1 maco  staff  1128 Mar  3 17:19 newobject.rhtml
+  -rw-r--r--   1 maco  staff    45 Mar  3 17:19 noaccess.html.erb
+  -rw-r--r--   1 maco  staff     0 Mar  3 17:19 noaccess.json.erb
+  -rw-r--r--   1 maco  staff   352 Mar  3 17:19 pick_load.html.erb
+  -rw-r--r--   1 maco  staff   405 Mar  3 17:19 pick_save.html.erb
+  -rw-r--r--   1 maco  staff  1026 Mar  3 17:19 show.html.erb
+  -rw-r--r--   1 maco  staff   349 Mar  3 17:19 show.json.erb
+  -rw-r--r--   1 maco  staff   204 Mar  3 17:19 show.rxml
+  -rw-r--r--   1 maco  staff    49 Mar  3 17:19 table_inserts.erb
+  -rw-r--r--   1 maco  staff   331 Mar  3 17:19 viewlog.html.erb
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+I found a bug in the readme:
+  This is a sample source adapter Rub class to retrieve and edit Sugar Account objects.  It is the SugarAccounts.rb located in the /lib subdirectory of RhoSync.
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+I need to enhance my git experience so I can fix bugs.
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Later today I should meet David who is a marketing guy for Pierre.
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+using sql to change admin password to admin1:
+
+sqlite> update users set crypted_password='04b92b1d64e140fbefdf118b2052b90c358db566'where login='admin';
+update users set crypted_password='04b92b1d64e140fbefdf118b2052b90c358db566'where login='admin';
+sqlite> update users set salt='b4568c2593eb5b6d726e1016310de1627c871d88'where login='admin';
+update users set salt='b4568c2593eb5b6d726e1016310de1627c871d88'where login='admin';
+sqlite> commit;
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+git...
+Vidal:
+  - create a fork
+  - fix bugs in the fork
+  - do a push
+  - Adam sort of owns rhosync and either Lars or Michael sort of owns rhodes
+  - http://github.com/rhomobile/rhosync/tree
+  - http://github.com/rhomobile/rhodes/tree
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+this:
+   http://localhost:3000/apps/SugarCRM/sources/SugarAccounts/edit
+   Question for Source Adapter : ask!
+   Lars: it passes a string to source adaptor ask-method which passes it to the source; useful for wikipedia
+
+I see it here:
+rhosync/lib/wikipedia.rb
+
+  # direct response to query from device
+  # in the case of wikipedia we return 2 objects per page
+  # the header object has information about the page, and
+  # the data object has the contents of the page
+  #
+  # we split this in 2 becasue the data portions are large and we only want
+  # to load them selectively for pages to conserve RAM usage on device
+  #
+  def ask(question)
+    puts "Wikipedia ask with #{question.inspect.to_s}\n"
+
+    data = ask_wikipedia question
+
+    header_id = "header_#{question}"
+    data_id = "data_#{question}"
+
+    # return array of objects that correspond
+    [
+      ObjectValue.new(:source_id=>@source.id, :object => header_id,
+                      :attrib => "section", :value => "header"),
+
+      ObjectValue.new(:source_id=>@source.id, :object => header_id,
+                      :attrib => "created_at", :value => DateTime.now.to_s),
+
+      ObjectValue.new(:source_id=>@source.id, :object => header_id,
+                      :attrib => "question", :value => question),
+
+      ObjectValue.new(:source_id=>@source.id, :object => header_id,
+                      :attrib => "data_id", :value => data_id),
+
+      #########
+
+      ObjectValue.new(:source_id=>@source.id, :object => data_id,
+                      :attrib => "section", :value => "data"),
+
+      ObjectValue.new(:source_id=>@source.id, :object => data_id,
+                      :attrib => "data_length", :value => data.length.to_s),
+
+      ObjectValue.new(:source_id=>@source.id, :object => data_id,
+                      :attrib => "data", :value => data),
+
+    ]
+  end
+
+I found some other interesting things in that file:
+
+    case response
+    when Net::HTTPSuccess then
+      nil
+    when Net::HTTPRedirection then
+      # location has changed so in effect new search query
+      @search_query = response['location'].sub('/wiki/', '')
+      response, data = fetch(response['location'], headers, limit - 1)
+    else
+      response.error!
+    end
+
+    return response, data
+  end
+
+  #
+  # wikipedia pages are shown in an iframe in the Rhodes app
+  # here we rewrite URLs so that they work in that context
+  #
+  # rewrite URLs of the form:
+  # <a href="/wiki/Feudal_System"
+  # to
+  # <a href="/Wikipedia/WikipediaPage/{Feudal_System}/fetch"
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+wiki:
+
+
+The following is login code sample source adapter for SugarCRM
+accounts. This code can be placed inside a Source Adapter Class shown
+above (specifically inside the login method). Or it can be placed
+inside the Login part of the Source form if you're not using a source
+adapter class. It uses the SOAP web service interfaces exposed by
+SugarCRM.
+
+ u=@source.login
+ pwd=Digest::MD5.hexdigest(@source.password)
+ ua={'user_name' => u,'password' => pwd}
+ ss=client.login(ua,nil)
+ if ss.error.number.to_i != 0
+  puts 'failed to login - #{ss.error.description}'
+ else
+  session_id = ss['id']
+  uid = client.get_user_id(session_id)
+ end
+
+
+Yep:
+
+I found it in lib/sugar_adapter.rb:
+
+
+  def login
+    puts "SugarCRM #{@module_name} login"
+    if @source.credential and !@source.credential.login.blank?
+      u = @source.credential.login
+      p = Digest::MD5.hexdigest(@source.credential.password)
+    else
+      u = @source.login
+      p "Login "+u
+      p = Digest::MD5.hexdigest(@source.password)
+    end
+
+    ua = {'user_name' => u,'password' => p}
+    ss = @client.login(ua,nil)
+    if ss.error.number.to_i != 0
+      p "failed to login - #{ss.error.description} with #{u},#{p}"
+      raise "Failed to login"
+      return
+    else
+      @session_id = ss['id']
+      uid = @client.get_user_id(@session_id)
+    end
+  end
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+    puts "SugarCRM #{@module_name} login"
+
+I wonder what @module_name is? probably a module in SugarCRM.
+
+client object ...
+  the "client" variable contains the SOAP driver that methods are exposed on.
+
+Available "Builtin" Variables
+client - the SOAP driver created from the WSDL file at @source.url. Not necessary if you are using a REST API
+@source.url - the URL where the backend is exposed. Typically used if you are calling a REST API
+@source.login - the userid to login with
+@source.password - the password to login with
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+What else can rhogen do?
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ rhogen model BikleModel10
+rhogen model BikleModel10
+Usage: rhogen model [options] [args]
+
+Generates a new model for a given source.  You must specify name, source_url, and source_id.
+You can also specify an optional attribute list in the form: 'attribute1', 'attribute2', 'attribute3'...
+
+
+Options specific for this generator:
+General options:
+    -p, --pretend                    Run, but do not make any changes.
+    -f, --force                      Overwrite files that already exist.
+    -s, --skip                       Skip files that already exist.
+    -d, --delete                     Delete files that have previously been generated with this generator.
+        --no-color                   Don't colorize the output
+    -h, --help                       Show this message
+        --debug                      Do not catch errors
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ rhogen model BikleModel10 http://bikle.com/helloworld bikle_helloworld
+rhogen model BikleModel10 http://bikle.com/helloworld bikle_helloworld
+Generating with model generator:
+[32m     [ADDED][0m  BikleModel10/config.rb
+[32m     [ADDED][0m  BikleModel10/index.erb
+[32m     [ADDED][0m  BikleModel10/edit.erb
+[32m     [ADDED][0m  BikleModel10/new.erb
+[32m     [ADDED][0m  BikleModel10/show.erb
+[32m     [ADDED][0m  BikleModel10/controller.rb
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$
+
+
+hmm; ok
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+
+[edit] A RhoSync Query
+
+The following is sample query code from the SugarCRM Accounts
+source. Just one line does the trick. The one that ship is the
+db/migrate/sources.yml file has more comments and intermediate
+variables for understandability but does exactly the same thing.
+
+ result = client.get_entry_list(session_id,'Account','','',0,['name','industry'],10000,0)
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+I found several .yml files next to sources.yml:
+
+  /pt/c3/rho/rhosync/db/migrate:
+  total used in directory 256 available 202505420
+  drwxr-xr-x  34 maco  staff  1156 Mar  3 17:19 .
+  drwxr-xr-x   5 maco  staff   170 Mar  4 12:35 ..
+  -rw-r--r--   1 maco  staff   265 Mar  3 17:19 20080831020723_create_sources.rb
+  -rw-r--r--   1 maco  staff   390 Mar  3 17:19 20080831020931_create_object_values.rb
+  -rw-r--r--   1 maco  staff   147 Mar  3 17:19 20081002212238_add_source_refreshtime.rb
+  -rw-r--r--   1 maco  staff   178 Mar  3 17:19 20081209184058_add_adapter_to_source.rb
+  -rw-r--r--   1 maco  staff   240 Mar  3 17:19 20081212232907_create_apps.rb
+  -rw-r--r--   1 maco  staff   274 Mar  3 17:19 20081214225920_create_clients.rb
+  -rw-r--r--   1 maco  staff   137 Mar  3 17:19 20081217021312_add_source_app_id.rb
+  -rw-r--r--   1 maco  staff   310 Mar  3 17:19 20081219210215_create_client_maps.rb
+  -rw-r--r--   1 maco  staff   798 Mar  3 17:19 20081219221845_create_users.rb
+  -rw-r--r--   1 maco  staff   240 Mar  3 17:19 20081225004842_create_memberships.rb
+  -rw-r--r--   1 maco  staff   213 Mar  3 17:19 20081226213425_add_object_to_client_maps.rb
+  -rw-r--r--   1 maco  staff   179 Mar  3 17:19 20090106014549_add_user_id_to_clients.rb
+  -rw-r--r--   1 maco  staff   224 Mar  3 17:19 20090106082831_add_object_value_attrib_to_client_maps.rb
+  -rw-r--r--   1 maco  staff   221 Mar  3 17:19 20090106091935_add_object_value_value_to_client_maps.rb
+  -rw-r--r--   1 maco  staff   290 Mar  3 17:19 20090112210648_create_credentials.rb
+  -rw-r--r--   1 maco  staff   195 Mar  3 17:19 20090116211509_add_poll_interval_to_sources.rb
+  -rw-r--r--   1 maco  staff   183 Mar  3 17:19 20090122191208_add_priority_to_sources.rb
+  -rw-r--r--   1 maco  staff   179 Mar  3 17:19 20090127020800_add_url_to_credentials.rb
+  -rw-r--r--   1 maco  staff   345 Mar  3 17:19 20090130020208_add_index_to_object_values.rb
+  -rw-r--r--   1 maco  staff   811 Mar  3 17:19 20090130022441_add_index_to_client_map.rb
+  -rw-r--r--   1 maco  staff   979 Mar  3 17:19 20090202185656_update_client_maps_columns.rb
+  -rw-r--r--   1 maco  staff   221 Mar  3 17:19 20090202225530_update_client_maps_ov_id_type.rb
+  -rw-r--r--   1 maco  staff   191 Mar  3 17:19 20090206205745_add_incremental_to_source.rb
+  -rw-r--r--   1 maco  staff   177 Mar  3 17:19 20090210014552_add_anonymous_to_apps.rb
+  -rw-r--r--   1 maco  staff   151 Mar  3 17:19 20090210025130_change_object_value_to_text.rb
+  -rw-r--r--   1 maco  staff   241 Mar  3 17:19 20090212192727_add_anonymous_user_to_users.rb
+  -rw-r--r--   1 maco  staff   309 Mar  3 17:19 20090214020726_create_source_logs.rb
+  -rw-r--r--   1 maco  staff   220 Mar  3 17:19 20090219230647_create_administrations.rb
+  -rw-r--r--   1 maco  staff    97 Mar  3 17:19 administrations.yml
+  -rw-r--r--   1 maco  staff   218 Mar  3 17:19 apps.yml
+  -rw-r--r--   1 maco  staff  2379 Mar  3 17:19 sources.yml
+  -rw-r--r--   1 maco  staff   355 Mar  3 17:19 users.yml
+
+This is kewl; I had been using fixtures to load data in the past.
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+A RhoSync Sync
+The sync code takes apart the query results and puts its into the object_values table. For example, this handles the results coming back from SugarCRM web service calls.
+
+
+  def sync
+    puts "SugarCRM #{@module_name} sync with #{@result.entry_list.length}"
+
+    user_id=@source.current_user.id
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        unless y.value.blank?
+          o=ObjectValue.new
+          o.source_id=@source.id
+          o.object=x['id']
+          o.attrib=y.name
+          o.value=y.value
+          o.user_id=user_id if @source.credential
+          o.save
+        end
+      end
+    end
+  end
+
+This smells like a pivot where I take a wide row and transform it into a series of narrow rows.
+
+
+See the Sugar adapter in the db/migrate/sources.yml. This can be
+loaded into your RhoSync server with the "Load Sources" operation but
+is automatically loaded if you run rake db:migrate.
+
+I dont know how to trigger "Load Sources" operation.
+
+It has examples of other operations (such as Create, Update, Delete and Logff).
+
+What is it?
+
+Once you've edited the code to your satisfaction, click on Update
+Source Adapter Code to save it. Assuming your code is correct, you
+should then see the resulting object/attribute/value triples coming
+back from the backend in your browser.
+
+I think this describes me inside of Editing Source Adapter form.
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+URI::InvalidURIError in SourcesController#show
+
+hmm...
+
+I looked at sources.yml
+
+Maybe some of the source objects are missing some data?
+
+
+>> s1 = Source.find(1)
+s1 = Source.find(1)
+=> #<Source id: 1, name: "SugarAccounts", url: nil, login: nil, password: nil, created_at: "2009-03-04 19:07:54", updated_at: "2009-03-04 19:07:54", refreshtime: nil, adapter: "SugarAccounts", app_id: 1, pollinterval: nil, priority: nil, incremental: nil>
+>>
+
+Notice that url is nil.  That might be it.
+
+Here is the method where the exception happens:
+
+
+  # ONLY SUBSCRIBERS MAY ACCESS THIS!
+  def show
+    @app=@source.app
+    if !check_access(@app)
+      render :action=>"noaccess"
+    else
+      usersub=@app.memberships.find_by_user_id(current_user.id) if current_user
+      @source.credential=usersub.credential if usersub # this variable is available in your source adapter
+      @source.refresh(@current_user) if params[:refresh] || @source.needs_refresh
+      objectvalues_cmd="select * from object_values where update_type='query' and source_id=#{@source.id}"
+      objectvalues_cmd << " and user_id=" + @source.credential.user.id.to_s if @source.credential
+      objectvalues_cmd << " order by object,attrib"
+
+      # if client_id is provided, return only relevant object for that client
+      if params[:client_id] # and params[:id] // if we dont have ID how do we get here?
+        @object_values=process_objects_for_client(@source, params[:client_id])
+      else
+        @object_values=ObjectValue.find_by_sql objectvalues_cmd
+      end
+      @object_values.delete_if {|o| o.value.nil? || o.value.size<1 }  # don't send back blank or nil OAV triples
+      p "Sending #{@object_values.length} records to #{params[:client_id]}" if params[:client_id] and @object_values
+      respond_to do |format|
+        format.html
+        format.xml  { render :xml => @object_values}
+        format.json
+      end
+    end
+  end
+
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+wiki:
+
+Testing Your Rhosync Adapter
+
+You can use the web interface to test that you are in fact retrieving
+data from your backend. Click on Show Records from the source adapter
+console to view the "object-attribute-values" coming from your backend
+data source. You can also edit, create and delect objects from this
+same web interface.
+
+I'd like to see a demo of this.
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+I'll look into this:
+
+Creating users and apps
+
+In order to use your source adapter, you'll need to setup an
+application and user for your rhosync system. Please see Configure the
+SugarCRM Sample App for your own SugarCRM Instance tutorial for more
+information.
+
+http://wiki.rhomobile.com/index.php/Configure_the_SugarCRM_Sample_App_for_your_own_SugarCRM_Instance
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+wiki:
+
+Building Adapters for REST Backends
+
+Building a RhoSync adapter for a REST backend is very similar to doing
+it for SOAP backends. Its all a matter of writing the right Ruby
+code. The following example source adapter methods, from our
+LightHouse app, demonstrate how to interact with backends that expose
+REST interfaces. For example, below is an example from our Lighthouse
+sample app of how to query for Lighthouse tickets.
+
+
+grep def lig*b|grep query
+lighthouse_milestones.rb:  def query
+lighthouse_projects.rb:  def query
+lighthouse_settings.rb:  def query
+lighthouse_ticket_versions.rb:  def query
+lighthouse_tickets.rb:  def query
+lighthouse_users.rb:  def query
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync/lib maco$
+
+lighthouse_tickets.rb:
+
+
+  # curl -u "<API key>:x" -H 'Accept: application/xml'  http://<account>.lighthouseapp.com/projects/<project-id>/tickets.xml
+  def query
+    log "LighthouseTickets query"
+
+    @result = []
+
+    # iterate over all projects and get the tickets for for each
+    # we use the IDs of the projects already synced in LighthouseProjects adapter
+    projectSource = Source.find_by_adapter("LighthouseProjects")
+    projects = ObjectValue.find(:all, :conditions => ["source_id = ? and update_type = 'query' and attrib = 'name'",
+      projectSource.id])
+
+    projects.each do |project|
+      uri = URI.parse(base_url)
+      req = Net::HTTP::Get.new("/projects/#{project.object}/tickets.xml?q=all", 'Accept' => 'application/xml')
+      req.basic_auth @source.credential.token, "x"
+      response = Net::HTTP.start(uri.host,uri.port) do |http|
+        http.request(req)
+      end
+      xml_data = XmlSimple.xml_in(response.body);
+
+      # if there are no tickets for a project this will be nil
+      if xml_data["ticket"]
+        @result = @result + xml_data["ticket"]
+      end
+    end
+  end
+
+what's curl -u do?
+  It sets user/pass I think
+  Try this: curl -u "bob_lamocha:sekret88" -H 'Accept: text/html' -o /tmp/jnk.html http://www.yahoo.com
+
+More info here:
+  rhosync/lib/lighthouse_sample_readme.txt
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+wiki:
+  git clone git://github.com/rhomobile/rhodes.git rhodes
+
+
+ll
+total 104
+drwxr-xr-x  15 maco  staff    510 Mar  4 16:16 ./
+drwxr-xr-x   8 maco  staff    272 Mar  4 16:14 ../
+drwxr-xr-x  13 maco  staff    442 Mar  4 16:16 .git/
+-rw-r--r--   1 maco  staff    667 Mar  4 16:16 .gitignore
+-rw-r--r--   1 maco  staff   1644 Mar  4 16:16 CHANGELOG
+-rw-r--r--   1 maco  staff  35127 Mar  4 16:16 LICENSE
+-rw-r--r--   1 maco  staff   5802 Mar  4 16:16 README.textile
+drwxr-xr-x  14 maco  staff    476 Mar  4 16:16 apps/
+drwxr-xr-x   9 maco  staff    306 Mar  4 16:16 bb/
+drwxr-xr-x  13 maco  staff    442 Mar  4 16:16 iphone/
+drwxr-xr-x   4 maco  staff    136 Mar  4 16:16 mac/
+drwxr-xr-x  12 maco  staff    408 Mar  4 16:16 shared/
+drwxr-xr-x   9 maco  staff    306 Mar  4 16:16 symbian/
+drwxr-xr-x   6 maco  staff    204 Mar  4 16:16 win32/
+drwxr-xr-x  10 maco  staff    340 Mar  4 16:16 wm/
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$
+
+
+Help from Lars:
+  git checkout -b 1-0-unstable
+  git pull origin 1-0-unstable
+
+What was the branch I was on?
+  master?
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$ git branch
+git branch
+* 1-0-unstable
+  master
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$
+
+yep.
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$ git branch
+git branch
+* 1-0-unstable
+  master
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$ ll
+ll
+total 120
+drwxr-xr-x  12 maco  staff    408 Mar  4 16:23 ./
+drwxr-xr-x   8 maco  staff    272 Mar  4 16:14 ../
+drwxr-xr-x  15 maco  staff    510 Mar  4 16:23 .git/
+-rw-r--r--   1 maco  staff    871 Mar  4 16:23 .gitignore
+-rw-r--r--   1 maco  staff   1646 Mar  4 16:23 CHANGELOG
+-rw-r--r--   1 maco  staff  35127 Mar  4 16:16 LICENSE
+-rw-r--r--   1 maco  staff    279 Mar  4 16:23 LICENSING_OPTIONS
+-rw-r--r--   1 maco  staff   6327 Mar  4 16:23 README.textile
+-rw-r--r--   1 maco  staff    138 Mar  4 16:23 Rakefile
+drwxr-xr-x  14 maco  staff    476 Mar  4 16:23 apps/
+drwxr-xr-x  10 maco  staff    340 Mar  4 16:23 platform/
+drwxr-xr-x  10 maco  staff    340 Mar  4 16:23 rhodes/
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$ ll platform/
+ll platform/
+total 0
+drwxr-xr-x  10 maco  staff  340 Mar  4 16:23 ./
+drwxr-xr-x  12 maco  staff  408 Mar  4 16:23 ../
+drwxr-xr-x   4 maco  staff  136 Mar  4 16:23 android/
+drwxr-xr-x   9 maco  staff  306 Mar  4 16:23 bb/
+drwxr-xr-x  15 maco  staff  510 Mar  4 16:23 iphone/
+drwxr-xr-x   4 maco  staff  136 Mar  4 16:23 mac/
+drwxr-xr-x  12 maco  staff  408 Mar  4 16:23 shared/
+drwxr-xr-x   9 maco  staff  306 Mar  4 16:23 symbian/
+drwxr-xr-x   6 maco  staff  204 Mar  4 16:23 win32/
+drwxr-xr-x  10 maco  staff  340 Mar  4 16:23 wm/
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$
+
+switch back to master:
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$ git checkout master
+git checkout master
+Switched to branch "master"
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$ git branch -a
+git branch -a
+  1-0-unstable
+* master
+  origin/0-3-stable
+  origin/1-0-unstable
+  origin/HEAD
+  origin/master
+
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$ git checkout 1-0-unstable
+git checkout 1-0-unstable
+Switched to branch "1-0-unstable"
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes maco$
+
+cd rhodes/apps
+rhogen app AccountApp
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps maco$ rhogen app BikleApp10
+rhogen app BikleApp10
+Generating with app generator:
+[32m     [ADDED][0m  BikleApp10/application.rb
+[32m     [ADDED][0m  BikleApp10/index.erb
+[32m     [ADDED][0m  BikleApp10/layout.erb
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps maco$
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+now I see:
+
+-rw-r--r--   1 maco  staff   83 Mar  4 16:35 application.rb
+-rw-r--r--   1 maco  staff  282 Mar  4 16:35 index.erb
+-rw-r--r--   1 maco  staff  728 Mar  4 16:35 layout.erb
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+application.rb reminds me of a controller:
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$ cat application.rb
+cat application.rb
+require 'rho/rhoapplication'
+
+class BikleApp10Application < Rho::RhoApplication
+endmaco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Generally you will want to have the Rhodes runner start up with your new app. To do this edit the config.rb file in the apps directory and set the start path to your app:
+ require 'rho'
+ Rho::RhoConfig.start_path = '/BikleApp10'
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+kewl, many apps I can study:
+  /pt/c3/rho/rhodes/apps:
+  total used in directory 32 available 202396920
+  drwxr-xr-x  15 maco  staff  510 Mar  4 16:35 .
+  drwxr-xr-x  12 maco  staff  408 Mar  4 16:34 ..
+  drwxr-xr-x   5 maco  staff  170 Mar  4 16:16 Basecamp
+  drwxr-xr-x   5 maco  staff  170 Mar  4 16:35 BikleApp10
+  drwxr-xr-x   4 maco  staff  136 Mar  4 16:16 GeoLocation
+  drwxr-xr-x   6 maco  staff  204 Mar  4 16:16 Phonebook
+  drwxr-xr-x   5 maco  staff  170 Mar  4 16:16 RhoSiebel
+  drwxr-xr-x   7 maco  staff  238 Mar  4 16:34 RhoSugarCRM
+  drwxr-xr-x   9 maco  staff  306 Mar  4 16:34 Settings
+  drwxr-xr-x   6 maco  staff  204 Mar  4 16:34 System
+  -rw-r--r--   1 maco  staff  178 Mar  4 16:34 config.rb
+  -rw-r--r--   1 maco  staff  978 Mar  4 16:34 index.erb
+  -rw-r--r--   1 maco  staff  619 Mar  4 16:16 layout.erb
+  -rw-r--r--   1 maco  staff  199 Mar  4 16:16 loading.html
+  drwxr-xr-x   4 maco  staff  136 Mar  4 16:16 shared
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+config.rb is small:
+
+require 'rho'
+
+Rho::RhoConfig.start_path = '/'
+
+Rho::RhoConfig.options_path = '/?location=history'
+
+Rho::RhoConfig.rhobundle_zip_url = nil
+
+Rho::RhoConfig.rhobundle_zip_pwd = nil
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Alternatively you can edit the top level sample apps index page (index.erb in the apps directory) as follows:
+  <h4>Sample Apps</h4>
+  <a href="AccountApp">SugarCRM Accounts</a><br/>
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+I see this:
+
+<!-- main index page -->
+<div align="center">
+        <h3>Home</h3>
+        <% if @msg %>
+          <h4><font color="green"><%=@msg%></font></h4>
+        <% end %>
+        <div style="margin:20px 0px;font-size:130%;font-weight:bold;color:#ff8800">Sample Apps</div>
+        <a href="RhoSugarCRM/app">Sugar CRM</a><br/>
+
+        <hr />
+        <a href="BikleApp10">BikleApp10</a><br/>
+        <hr />
+
+        <div style="margin:20px 0px;font-size:130%;font-weight:bold;color:#ff8800">Device Capabilities</div>
+        <a href="System">System API</a><br/>
+        Platform:<%= System::get_property('platform')%><br/>
+
+        <% if System::get_property('platform') != 'APPLE' && System::get_property('platform') != 'WINDOWS' %>
+                <a href="GeoLocation">Your location:</a> <geolocation>loading...</geolocation><br/>
+                Latitude: <geolatitude>loading...</geolatitude><br/>
+                Longitude: <geolongitude>loading...</geolongitude><br/>
+        <% end %>
+
+        <a href="Settings">Settings</a><br/>
+        <% if SyncEngine::logged_in > 0 %>
+                <a href="/Settings/User/logout">Logout</a>
+        <%else%>
+                <a href="/Settings/User/login">Login</a>
+        <%end%>
+</div>
+
+
+Notice that outer layer is <div>, it probably gets pulled into the layout.erb:
+<html>
+        <head>
+                <title>Home</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+                <% if System::get_property('platform') == 'WINDOWS' %>
+                        <script src="/shared/js/rhogeolocation-wm.js"></script>
+                <% end %>
+                <% if System::get_property('platform') == 'APPLE' %>
+                        <script src="/shared/js/jquery-1.2.6.min.js"></script>
+                        <script src="/shared/js/rhogeolocation.js"></script>
+                <% end %>
+                <!--style type="text/css">
+                h3 {
+                        font-style: italic;
+                        font-weight: bold;
+                        color: #0f0
+                }
+                </style-->
+        </head
+        <body>
+                <!-- Page content goest here -->
+                <%= @content %>
+        </body>
+</html>
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+beyond test driven development by martin ankerl, mentions rspec:
+  http://martin.ankerl.com/?s=testing
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Next, we want to generate a model for our application, let's call it "Account" and give it a name and industry attribute (first moving to the generated directory):
+
+cd AccountApp
+rhogen model Account "http://rhosyncdev.rhohub.com/sources/1" 1 name,industry
+
+Ah I had seen
+rhogen model
+earlier today
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$ rhogen model Account "http://rhosyncdev.rhohub.com/sources/1" 1 name,industry
+rhogen model Account "http://rhosyncdev.rhohub.com/sources/1" 1 name,industry
+Generating with model generator:
+[32m     [ADDED][0m  Account/config.rb
+[32m     [ADDED][0m  Account/index.erb
+[32m     [ADDED][0m  Account/edit.erb
+[32m     [ADDED][0m  Account/new.erb
+[32m     [ADDED][0m  Account/show.erb
+[32m     [ADDED][0m  Account/controller.rb
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$ ll
+ll
+total 24
+drwxr-xr-x   6 maco  staff  204 Mar  4 17:04 ./
+drwxr-xr-x  15 maco  staff  510 Mar  4 17:00 ../
+drwxr-xr-x   8 maco  staff  272 Mar  4 17:04 Account/
+-rw-r--r--   1 maco  staff   83 Mar  4 16:35 application.rb
+-rw-r--r--   1 maco  staff  282 Mar  4 16:35 index.erb
+-rw-r--r--   1 maco  staff  728 Mar  4 16:35 layout.erb
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$ ll Account/
+ll Account/
+total 48
+drwxr-xr-x  8 maco  staff  272 Mar  4 17:04 ./
+drwxr-xr-x  6 maco  staff  204 Mar  4 17:04 ../
+-rw-r--r--  1 maco  staff  119 Mar  4 17:04 config.rb
+-rw-r--r--  1 maco  staff  927 Mar  4 17:04 controller.rb
+-rw-r--r--  1 maco  staff  703 Mar  4 17:04 edit.erb
+-rw-r--r--  1 maco  staff  225 Mar  4 17:04 index.erb
+-rw-r--r--  1 maco  staff  500 Mar  4 17:04 new.erb
+-rw-r--r--  1 maco  staff  211 Mar  4 17:04 show.erb
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/apps/BikleApp10 maco$
+
+Notice that view related erb-files are mixed with 2 .rb files: config.rb and controller.rb
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+wiki:
+This will generate the following files in a directory called "Account":
+controller.rb - contains the basic CRUD actions: index, new, create, edit, update and delete.
+config.rb - provides the URL to connecting with the sync engine
+index.erb - the HTML template to display the list of objects
+new.erb - the template to supply values to create a new object
+edit.erb - the template to edit an object
+show.erb - displays the selected object
+The source_url and source_id (parameters 3 and 4) refer to the rhosync source show url and id for the source, respectively.
+Once this is generated you will probably want to go back and edit the index.html file for the app to have a link to the generated model. For example:
+  <li><a href="Account">Accounts</a></li>
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Lets see what is in the controller.rb...
+
+require 'rho/rhocontroller'
+
+class AccountController < Rho::RhoController
+
+  #GET /Account
+  def index
+    @Accounts = Account.find(:all)
+    render
+  end
+
+  # GET /Account/1
+  def show
+    @Account = Account.find(@params['id'])
+    render :action => :show
+  end
+
+  # GET /Account/new
+  def new
+    @Account = Account.new
+    render :action => :new
+  end
+
+  # GET /Account/1/edit
+  def edit
+    @Account = Account.find(@params['id'])
+    render :action => :edit
+  end
+
+  # POST /Account/create
+  def create
+    @Account = Account.new(@params['Account'])
+    @Account.save
+    redirect :action => :index
+  end
+
+  # POST /Account/1/update
+  def update
+    @Account = Account.find(@params['id'])
+    @Account.update_attributes(@params['Account'])
+    redirect :action => :index
+  end
+
+  # POST /Account/1/delete
+  def delete
+    @Account = Account.find(@params['id'])
+    @Account.destroy
+    redirect :action => :index
+  end
+end
+
+Notice the calls to render.
+In rails I think this is done implicitly.
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+
+Here is config.rb:
+
+require 'rho'
+
+Rho::RhoConfig::add_source("Account", {"url"=>"http://rhosyncdev.rhohub.com/sources/1", "source_id"=>1})
+
+I see how this relates to the command line.
+
+I should have used a different url and source id.
+
+Q: Lars, How do I deal with contention for a URL or id?
+ans: In the future, the server will get into the act and prevent collisions when the model is defined.
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+Here is a discussion about doing git merges from Michael Hartl of insoshi:
+  http://blog.insoshi.com/2008/10/28/using-a-temporary-branch-when-doing-git-merges/
+
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+Friendly lady in the break room:
+  Doris
+  Is she part of building management?
+
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo
+

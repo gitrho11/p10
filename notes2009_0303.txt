@@ -155,3 +155,335 @@ I see 2 tutorials:
   - http://rubyonmobile.wordpress.com/
 
 ooooooooooo ooooooooo
+
+error from git:
+maco-smiths-macbook-pro:/pt/c3/rho maco$ git clone git://github.com/rhomobile/rhosync.git
+warning: templates not found /bitnami/rubystackBeta/output/git/share/git-core/templates/
+
+What's it mean?
+I ignored it and commented the bitnami git out of my path.
+
+I installed git from .dmg and now I have git here: /usr/local/git/
+
+This git works fine.
+
+oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo
+Now:
+gem install rspec-rails rake
+git clone git://github.com/rhomobile/rhosync.git
+cd rhosync
+
+gem list|grep mysql
+gem list|grep sqlite
+
+gem install sqlite3-ruby
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$ gem install msyql
+ERROR:  could not find gem msyql locally or in a repository
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$
+
+I googled this and found a post from Bala:
+
+Wednesday, May 07, 2008
+
+Ruby Gems ERROR: could not find rush locally or in a repository
+
+I had to do :
+
+gem sources -r http://gems.github.com/
+
+gem env shows:
+
+- :sources => ["http://gems.rubyforge.org"]
+
+
+I looked at help for gem:
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$ gem --help
+
+  RubyGems is a sophisticated package manager for Ruby.  This is a
+  basic help message containing pointers to more information.
+
+    Usage:
+      gem -h/--help
+      gem -v/--version
+      gem command [arguments...] [options...]
+
+    Examples:
+      gem install rake
+      gem list --local
+      gem build package.gemspec
+      gem help install
+
+    Further help:
+      gem help commands            list all 'gem' commands
+      gem help examples            show some examples of usage
+      gem help platforms           show information about platforms
+      gem help <COMMAND>           show help on COMMAND
+                                     (e.g. 'gem help install')
+    Further information:
+      http://rubygems.rubyforge.org
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$ gem help sources
+Usage: gem sources [options]
+
+  Options:
+    -a, --add SOURCE_URI             Add source
+    -l, --list                       List sources
+    -r, --remove SOURCE_URI          Remove source
+    -c, --clear-all                  Remove all sources (clear the cache)
+    -u, --update                     Update source cache
+
+  Common Options:
+    -h, --help                       Get help on this command
+    -V, --[no-]verbose               Set the verbose level of output
+    -q, --quiet                      Silence commands
+        --config-file FILE           Use this config file instead of default
+        --backtrace                  Show stack backtrace on errors
+        --debug                      Turn on Ruby debugging
+
+
+  Summary:
+    Manage the sources and cache file RubyGems uses to search for gems
+
+  Defaults:
+    --list
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$ gem env
+RubyGems Environment:
+  - RUBYGEMS VERSION: 1.2.0
+  - RUBY VERSION: 1.8.6 (2007-03-13 patchlevel 0) [i686-darwin8.5.3]
+  - INSTALLATION DIRECTORY: /Users/maco/pt/bnami/ruby/lib/ruby/gems/1.8
+  - RUBY EXECUTABLE: /Users/maco/pt/bnami/ruby/bin/ruby
+  - EXECUTABLE DIRECTORY: /Users/maco/pt/bnami/ruby/bin
+  - RUBYGEMS PLATFORMS:
+    - ruby
+    - x86-darwin-8
+  - GEM PATHS:
+     - /Users/maco/pt/bnami/ruby/lib/ruby/gems/1.8
+  - GEM CONFIGURATION:
+     - :update_sources => true
+     - :verbose => true
+     - :benchmark => false
+     - :backtrace => false
+     - :bulk_threshold => 1000
+  - REMOTE SOURCES:
+     - http://gems.rubyforge.org/
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$
+
+I'll look for mysql gem at rubyforge:
+
+I'm not seeing anything there...
+
+I'll try to create a simple rails app...
+
+
+maco-smiths-macbook-pro:/pt/c3/rho maco$ rails jnk
+/pt/bnami/ruby/bin/rails:9: require: command not found
+/pt/bnami/ruby/bin/rails:11: version: command not found
+/pt/bnami/ruby/bin/rails:13: syntax error near unexpected token `('
+/pt/bnami/ruby/bin/rails:13: `if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then'
+maco-smiths-macbook-pro:/pt/c3/rho maco$ which rails
+/pt/bnami/ruby/bin/rails
+maco-smiths-macbook-pro:/pt/c3/rho maco$
+
+Darn, that looks bad
+
+Maybe I got buggered by gem install rails?
+
+ok; I'll punt most of bitnami; maybe I can still use the sqlite3 and mysql in there
+
+oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo oooooo
+
+Started on a vanilla rails install:
+
+downloaded  ruby-1.8.7-p72/
+./config --prefix=/pt/r1
+make
+make install
+
+curl http://rubyforge.org/frs/download.php/45905/rubygems-1.3.1.tgz -O
+tar zxf rubygems-1.3.1.tgz
+cd  rubygems-1.3.1/
+ruby setup.rb
+
+gem install rails
+
+gem install rspec-rails rake
+
+gem install sqlite3-ruby
+
+maco-smiths-macbook-pro:/pt/software maco$ gem install mysql
+gem install mysql
+Building native extensions.  This could take a while...
+ERROR:  Error installing mysql:
+        ERROR: Failed to build gem native extension.
+
+/pt/r1/bin/ruby extconf.rb install mysql
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lm... yes
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lz... yes
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lsocket... no
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lnsl... no
+checking for mysql_query() in -lmysqlclient... no
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file for more
+details.  You may need configuration options.
+
+Provided configuration options:
+        --with-opt-dir
+        --without-opt-dir
+        --with-opt-include
+        --without-opt-include=${opt-dir}/include
+        --with-opt-lib
+        --without-opt-lib=${opt-dir}/lib
+        --with-make-prog
+        --without-make-prog
+        --srcdir=.
+        --curdir
+        --ruby=/pt/r1/bin/ruby
+        --with-mysql-config
+        --without-mysql-config
+        --with-mysql-dir
+        --without-mysql-dir
+        --with-mysql-include
+        --without-mysql-include=${mysql-dir}/include
+        --with-mysql-lib
+        --without-mysql-lib=${mysql-dir}/lib
+        --with-mysqlclientlib
+        --without-mysqlclientlib
+        --with-mlib
+        --without-mlib
+        --with-mysqlclientlib
+        --without-mysqlclientlib
+        --with-zlib
+        --without-zlib
+        --with-mysqlclientlib
+        --without-mysqlclientlib
+        --with-socketlib
+        --without-socketlib
+        --with-mysqlclientlib
+        --without-mysqlclientlib
+        --with-nsllib
+        --without-nsllib
+        --with-mysqlclientlib
+        --without-mysqlclientlib
+
+
+Gem files will remain installed in /pt/r1/lib/ruby/gems/1.8/gems/mysql-2.7 for inspection.
+Results logged to /Users/maco/pt/r1/lib/ruby/gems/1.8/gems/mysql-2.7/gem_make.out
+maco-smiths-macbook-pro:/pt/software maco$
+
+
+This looks useful:
+  - http://blog.springenwerk.com/2008/11/rails-22-and-native-mysql-gem-on-mac-os.html
+  - "ARCHFLAGS='-arch i386' gem install mysql -- --with-mysql-include=/opt/local/include/mysql5/mysql/ --with-mysql-lib=/opt/local/lib/mysql5/mysql/ --with-mysql-config=/opt/local/bin/mysql_config5"
+
+But I think the mysql files in /pt/bnami are missing .h files.
+
+I'll download the real msyql.
+
+It's done; it wants to be soft linked to here: /usr/local/mysql/ so I let it.
+I had to kill the bnami mysql.
+
+try this:
+  export ARCHFLAGS='-arch i386'
+  gem install mysql -- --with-mysql-include=/usr/local/mysql/include/ --with-mysql-lib=/usr/local/mysql/lib/ --with-mysql-config=/usr/local/mysql/bin/mysql_config
+
+result:
+
+
+mac3:/usr/local/mysql maco$   gem install mysql -- --with-mysql-include=/usr/local/mysql/include/ --with-mysql-lib=/usr/local/mysql/lib/ --with-mysql-config=/usr/local/mysql/bin/mysql_config
+  gem install mysql -- --with-mysql-include=/usr/local/mysql/include/ --with-mysql-lib=/usr/local/mysql/lib/ --with-mysql-config=/usr/local/mysql/bin/mysql_config
+Building native extensions.  This could take a while...
+Successfully installed mysql-2.7
+1 gem installed
+mac3:/usr/local/mysql maco$
+
+Thats good.
+
+I tested a quick rails app and it works good.
+
+onward....
+
+
+mac3:/pt/c3/rho/rhosync maco$ mkdir -p log; touch log/development.log
+mkdir -p log; touch log/development.log
+mac3:/pt/c3/rho/rhosync maco$ rake gems:install
+rake gems:install
+(in /Users/maco/pt/customers3/rho/rhosync)
+gem install libxml-ruby
+
+Enclosing class/module 'cXMLHtmlParser' for module Options not known
+
+Enclosing class/module 'cXMLParser' for module Options not known
+
+No definition for rb_class_new_instance
+
+Enclosing class/module 'cXMLHtmlParser' for module Options not known
+
+Enclosing class/module 'cXMLParser' for module Options not known
+
+No definition for rb_class_new_instance
+Building native extensions.  This could take a while...
+Successfully installed libxml-ruby-0.9.8
+1 gem installed
+Installing ri documentation for libxml-ruby-0.9.8...
+Installing RDoc documentation for libxml-ruby-0.9.8...
+mac3:/pt/c3/rho/rhosync maco$
+
+q: I just tried
+gem install libxml-ruby
+on a new installation of rails 2.2.2 on my leopard-mac.
+
+Here is a screen dump:
+
+mac3:/pt/c3/rho/rhosync maco$ rake gems:install
+rake gems:install
+(in /Users/maco/pt/customers3/rho/rhosync)
+gem install libxml-ruby
+
+Enclosing class/module 'cXMLHtmlParser' for module Options not known
+
+Enclosing class/module 'cXMLParser' for module Options not known
+
+No definition for rb_class_new_instance
+
+Enclosing class/module 'cXMLHtmlParser' for module Options not known
+
+Enclosing class/module 'cXMLParser' for module Options not known
+
+No definition for rb_class_new_instance
+Building native extensions.  This could take a while...
+Successfully installed libxml-ruby-0.9.8
+1 gem installed
+Installing ri documentation for libxml-ruby-0.9.8...
+Installing RDoc documentation for libxml-ruby-0.9.8...
+mac3:/pt/c3/rho/rhosync maco$
+
+Notice the message:
+  Enclosing class/module 'cXMLHtmlParser' for module Options not known
+
+Is it indicating a problem?
+It's not a complete sentence.
+I don't know what the author of this gem is trying to tell me.
+
+Clues anyone?
+
+oooooooooooo
+my post:
+  http://rubyforge.org/forum/forum.php?thread_id=31903&forum_id=2129
+
+oooooooooooo
+
+
+
+
+
+This looks interesting:
+  http://rubyforge.org/forum/forum.php?thread_id=30546&forum_id=2129
