@@ -1,6 +1,617 @@
 /pt/c3/rho/p10/notes2009_0305.txt
 
+Lars:
+  What is PhoneGap?
+  phonegap.com
+  PhoneGap is a development tool that allows web developers to take
+  advantage of the core features in the iPhone, Android, and
+  Blackberry SDK using JavaScript.
+
+
+Adam gave a presentation to a bunch of android developers yesterday (at google?).
+
 continue walking the wiki tutorial
 
 then do the twitter tutorial
+
+wiki:
+
+git clone git://github.com/rhomobile/rhodes.git rhodes
+
+cd rhodes/apps
+rhogen app AccountApp
+
+vi config.rb
+vi index.erb
+
+rhogen model Account "http://rhosyncdev.rhohub.com/sources/1" 1 name,industry
+
+This will generate the following files in a directory called "Account":
+
+controller.rb - contains the basic CRUD actions: index, new, create, edit, update and delete.
+
+config.rb - provides the URL to connecting with the sync engine
+
+index.erb - the HTML template to display the list of objects
+
+new.erb - the template to supply values to create a new object
+
+edit.erb - the template to edit an object
+
+show.erb - displays the selected object
+
+The source_url and source_id (parameters 3 and 4) refer to the rhosync source show url and id for the source, respectively.
+Once this is generated you will probably want to go back and edit the index.html file for the app to have a link to the generated model. For example:
+  <li><a href="Account">Accounts</a></li>
+
+I was looking at this yesterday and noticed the calls to render.
+
+Vlad had put them in.
+
+In RoR, the render calls are not nec, they happen implicitly.
+
+require 'rho/rhocontroller'
+
+class AccountController < Rho::RhoController
+
+  #GET /Account
+  def index
+    @Accounts = Account.find(:all)
+    render
+  end
+...
+
+here is the edit.erb:
+
+<form title="Edit Account"
+          class="panel"
+          id="Account_edit_form"
+          method="POST"
+          action="<%=url_for(:action => :update)%>">
+        <fieldset>
+                <input type="hidden" name="id" value="<%=@Account.object%>"/>
+
+                  <div class="row">
+                          <label>Name: </label>
+                          <input type="text" name="Account[name]" value="<%=@Account.name%>"/>
+                  </div>
+
+                  <div class="row">
+                          <label>Industry: </label>
+                          <input type="text" name="Account[industry]" value="<%=@Account.industry%>"/>
+                  </div>
+
+        </fieldset>
+        <input type="submit" value="Update"/>
+        <p align="center">
+                <a href="<%=url_for(:action => :delete, :id => @Account.object)%>">
+                        <font color="#990000">Delete</font>
+                </a>
+        </p>
+</form>
+
+I need to find an erb-mode for emacs.
+
+Wiki:
+  Testing Your Application on Devices
+
+  http://wiki.rhomobile.com/index.php/Building_Rhodes_on_Supported_Platforms
+
+Prerequisites
+the iPhone SDK installed (as of February 1, 2009 it will require iPhone SDK 2.2.1)
+the XCode IDE (highly recommended but not actually required)
+
+What is the XCode IDE?
+
+It's probably in here:
+  /Developer/Applications/
+
+wiki:
+  Place your application code to rhodes/apps directory. You can change application folder: go to 'rhodes/shared/build' and open build.properties, uncomment and change apps.dir property
+  I couldnt find 'rhodes/shared/build'
+  ah, this is in the master branch not in 1-0-unstable branch
+  I see this:
+    rhodes/shared/build/build.properties:
+      - #apps.dir=d:/projects/Apps
+I dont get it, why the d: ?
+Is this for doing bb development on a pc too?
+
+wiki:
+  XCode Build
+  I did this:  apps.dir=/pt/c3/rho/rhodes/apps/BikleApp10
+
+Lars:
+  - master branch depends on ant
+  - 1-0 will depend on rake
+
+wiki Next:
+  - Inside /pt/c3/rho/rhodes/iphone is an iPhone XCode project. Load that project (currently called Rhorunner but will be changed to Rhodes later) and do a build.
+  - I see:
+
+  /pt/c3/rho/rhodes/iphone:
+  total used in directory 88 available 202275592
+  drwxr-xr-x  13 maco  staff    442 Mar  5 10:32 .
+  drwxr-xr-x  15 maco  staff    510 Mar  5 10:32 ..
+  drwxr-xr-x  14 maco  staff    476 Mar  5 10:32 Classes
+  -rw-r--r--   1 maco  staff    905 Mar  5 10:32 Info.plist
+  -rw-r--r--   1 maco  staff  18107 Mar  5 10:32 MainWindow.xib
+  drwxr-xr-x   3 maco  staff    102 Mar  5 10:32 Resources
+  -rw-r--r--   1 maco  staff   8847 Mar  5 10:32 icon.png
+  -rw-r--r--   1 maco  staff    411 Mar  5 10:32 main.m
+  drwxr-xr-x   5 maco  staff    170 Mar  5 10:32 rbuild
+  drwxr-xr-x   3 maco  staff    102 Mar  5 10:32 rhorubylib
+  drwxr-xr-x   3 maco  staff    102 Mar  5 10:32 rhorunner.xcodeproj
+  -rw-r--r--   1 maco  staff    193 Mar  5 10:32 rhorunner_Prefix.pch
+  drwxr-xr-x   5 maco  staff    170 Mar  5 10:32 rhosynclib
+
+  I think this is it: rhorunner.xcodeproj
+  I clicked, it gives me an IDE type thing.
+  - It has a code-highlighter editor which I can use to edit .rb files
+  - Help is huge
+  - I see evidence of a designer in there
+
+How do I "do a build"
+  - menu: Build
+  - bottom: build succeeded 12 warnings
+  - menu: build results (shows me warnings)
+  - I just noticed a pull-down in the ide in upper lhc: Simulator 2.1 | debug
+
+wiki:
+  Inside the rhodes/apps directory is a file called "index.erb". Edit it and add your application to it.
+  I thought I already edited this?
+
+anyway, I put my change in:
+
+<!-- main index page -->
+<div align="center">
+        <h3>Home</h3>
+        <% if @msg %>
+          <h4><font color="green"><%=@msg%></font></h4>
+        <% end %>
+        <h4>Sample Apps</h4>
+        <hr />
+        <a href="BikleApp10">BikleApp10</a><br/>
+        <hr />
+
+        <a href="RhoSugarCRM">Sugar CRM</a><br/>
+        <!-- <a href="RhoSiebel">Siebel Field Service</a><br/>
+                <a href="Basecamp">Basecamp</a><br/> -->
+        <a href="Lighthouse">Lighthouse</a><br/>
+        <a href="Wikipedia">Wikipedia</a><br/>
+
+        <h4>Device Capabilities</h4>
+        <a href="Phonebook">Phonebook List</a><br/>
+        Platform:<%= System::get_property('platform')%><br/>
+        <a href="GeoLocation">Your location:</a> <geolocation>loading...</geolocation><br/>
+        Latitude: <geolatitude>loading...</geolatitude><br/>
+        Longitude: <geolongitude>loading...</geolongitude><br/>
+        <a href="Settings">Settings</a><br/>
+        <% if SyncEngine::logged_in > 0 %>
+                <a href="/Settings/User/logout">Logout</a>
+        <%else%>
+                <a href="/Settings/User/login">Login</a>
+        <%end%>
+</div>
+
+wiki:
+  After you change application code just run 'Build and Go' command in XCode (green-button-hammer)
+  I did.  Now I see an iPhone!
+  - Tip: after you make changes and want to see them reflected on the device, delete the file rhodes/iphone/build/debug-iphonesimulator, and rebuild.
+  - I looked...
+
+  /pt/c3/rho/rhodes/iphone/build:
+  total used in directory 0 available 201658260
+  drwxr-xr-x@  6 maco  staff  204 Mar  5 11:12 .
+  drwxr-xr-x  16 maco  staff  544 Mar  5 11:12 ..
+  drwxr-xr-x   6 maco  staff  204 Mar  5 11:17 Debug-iphonesimulator
+  drwxr-xr-x@  3 maco  staff  102 Mar  5 11:11 rhorubylib.build
+  drwxr-xr-x@  4 maco  staff  136 Mar  5 11:16 rhorunner.build
+  drwxr-xr-x@  3 maco  staff  102 Mar  5 11:12 rhosynclib.build
+
+  - it worked!
+
+wiki:
+  - Tip: to see a log of what is happening on the device, type command-shift-r in xcode to bring up the rhorunner console.
+  - I found this in the ide-menu:  run-console, I see other things too like: debugger
+  - search for: "something interesting here"
+
+
+call:
+  - Vlad status: looking at testing frameworks
+  - Likes google
+  - we need to test: c c++ java ruby jscript
+  - 1 framework would be good (or 1 interface)
+
+Adam:
+  - we need camera for android?
+  - Michael might be working on it
+
+1.0:
+  - geo-location
+  - pim
+  - camera in triage
+
+Vlad has access to a project management list
+
+wiki:
+  - Command Line Build
+  - Go to rhodes/iPhone/rbuild and run 'ant' or 'ant runapp'
+
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/iphone/rbuild maco$ ll
+ll
+total 32
+drwxr-xr-x   5 maco  staff   170 Mar  5 10:32 ./
+drwxr-xr-x  16 maco  staff   544 Mar  5 11:12 ../
+-rw-r--r--   1 maco  staff    25 Mar  5 10:32 build.properties
+-rw-r--r--   1 maco  staff  4261 Mar  5 10:32 build.xml
+-rw-r--r--   1 maco  staff   344 Mar  5 10:32 findRhodesGuid.rb
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/iphone/rbuild maco$ which ant
+which ant
+/usr/bin/ant
+
+Lars status:
+  - generator enhancements (css, ...)
+  - removed sugar sample from apps directory
+  - looking at testing with xcode
+  - want to allow developer to use rake or generic xcode
+  - Brian will do something on ec2
+  - some more info in basecamp
+  - timeline?
+  - Adam: 1.0 precedence over hosted services
+  - ask support for bb in rhogen
+
+Adam:
+  - wrestling with user issue connected to cookies
+
+Vidal:
+  - Hampton... is motivated
+  - He fixed a bug!
+  - He has his own fork of wikipedia
+  - Vidal merged fix in
+  - productizing : issues to go
+  - testing
+  - issuestogo.com has a web site
+  - http://issues2go.vdggroup.com
+  - http://www.issues2go.com
+  -  git clone git://github.com/VGraupera/rhodes-issues2go.git rhodes_issues2go
+  - put it here: /pt/c3/rho/rhodes_issues2go/
+
+Russia:
+  - Need to finish fixing android problems
+
+wiki:
+  - ant:
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/iphone/rbuild maco$ ant
+ant
+Buildfile: build.xml
+
+RhoBundle:
+
+clean:
+   [delete] Deleting directory /Users/maco/pt/customers3/rho/rhodes/iphone/bin/RhoBundle
+    [mkdir] Created dir: /Users/maco/pt/customers3/rho/rhodes/iphone/bin/RhoBundle
+
+snip
+
+     [exec] ** BUILD SUCCEEDED **
+   [delete] Deleting: /Users/maco/pt/customers3/rho/rhodes/iphone/rbuild/rhodesguid.properties
+
+BUILD SUCCESSFUL
+Total time: 24 seconds
+maco-smiths-macbook-pro:/pt/c3/rho/rhodes/iphone/rbuild maco$
+
+  Then it brought up the simulator!
+
+wiki:
+  To clean everything run 'ant clean' in rhodes/iPhone/rbuild
+  - it worked!
+
+So, that's the end of wiki-rhodes tutorial.
+
+Now look at the twitter tutorial...
+
+twitter:
+  - look at the sample apps
+  - I'll see if I can run them...
+  - basecamp: I edited /pt/c3/rho/rhodes/apps/index.erb
+  - edit     rhodes/shared/build/build.properties: apps.dir=/pt/c3/rho/rhodes/apps/Basecamp
+  - rm -rf  /pt/c3/rho/rhodes/iphone/build/Debug-iphonesimulator
+  - Inside /pt/c3/rho/rhodes/iphone is an iPhone XCode project. Load that project (currently called Rhorunner but will be changed to Rhodes later) and do a build.
+  - I see a People link which does nothing..
+
+  - try this one: GeoLocation
+  - edit: /pt/c3/rho/rhodes/apps/index.erb ( I dont this page is getting used )
+  - edit  /pt/c3/rho/rhodes/shared/build/build.properties: apps.dir=/pt/c3/rho/rhodes/apps/GeoLocation
+  - rm -rf  /pt/c3/rho/rhodes/iphone/build/Debug-iphonesimulator
+  - This one gives me some coordinates
+
+  - try this one: Phonebook
+  - edit  /pt/c3/rho/rhodes/shared/build/build.properties: apps.dir=/pt/c3/rho/rhodes/apps/Phonebook
+  - rm -rf  /pt/c3/rho/rhodes/iphone/build/Debug-iphonesimulator
+  - cd      /pt/c3/rho/rhodes/iphone/rbuild/
+  - ant clean
+  - ant
+  - it works
+
+  - try this one: RhoSiebel
+  - edit  /pt/c3/rho/rhodes/shared/build/build.properties: apps.dir=/pt/c3/rho/rhodes/apps/RhoSiebel
+  - rm -rf  /pt/c3/rho/rhodes/iphone/build/Debug-iphonesimulator
+  - cd      /pt/c3/rho/rhodes/iphone/rbuild/
+  - ant clean
+  - ant
+  - it looks just like Phonebook; problem?  try the next app
+
+
+  - try this one: RhoSugarCRM
+  - edit  /pt/c3/rho/rhodes/shared/build/build.properties: apps.dir=/pt/c3/rho/rhodes/apps/RhoSugarCRM
+  - rm -rf  /pt/c3/rho/rhodes/iphone/build/Debug-iphonesimulator
+  - cd      /pt/c3/rho/rhodes/iphone/rbuild/
+  - ant clean
+  - ant
+  - looks good; I get a login screen
+ooooooo
+
+Look at this:
+  http://rhosyncdev.rhohub.com/apps/18
+  and
+  http://wiki.rhomobile.com/index.php/Configure_the_SugarCRM_Sample_App_for_your_own_SugarCRM_Instance
+
+
+ooooooo
+
+rhomsource status tells me if my sync failed
+see ticket #350
+http://rhomobile.lighthouseapp.com
+
+Vlad has callback techniques for dealing with asynchronous events.
+
+Vidal might be able to leverage off of this to deal with a request obtained asynchronously.
+
+Vidal wants to be able to replace old page with new page if new page available.
+
+He wants to avoid losing the old page if the sync fails.
+
+
+oooooooooo
+
+twitter demo:
+  http://twitter.com/statuses/public_timeline.xml
+  http://twitter.com/statuses/public_timeline.rss
+  http://rubyonmobile.wordpress.com/2009/02/10/making-twitter-mobile-client-with-ruby-using-rhodes-rhosync-part-1/
+
+Using Rhosync
+
+Rhosync will let you define common CRUD(Create, Read, Update, Delete) interfaces for mobile device via Rhodes.
+
+Rhosync is built as a pure Ruby On Rails based application, so you should not have any problems if you know how to run and develop using Ruby On Rails.
+
+
+After you install Rhosync following the instruction, let’s startup the
+server, register your account, login to the server, and create an
+application called “Twitter”. Once application is created, click “Add
+Source” and create an source called “Twitter Public Timeline”
+
+localhost:3000
+register: dan/admin1
+http://localhost:3000/apps/new
+  name: twitter10
+http://localhost:3000/apps/twitter12/edit
+  add_source link
+
+gives me:
+  http://localhost:3000/apps/twitter12/sources/new
+
+To setup adapter, you can either generate the adapter using “rhogen”
+command, or type source code directly from the web form.
+
+I choose generating adapter myself for better debugging purpose. If
+your adapter code has some bugs, any exception will point the line
+number which contains the bug. If you type code in the form, your code
+is kept at database and get evaluated dynamically when required, but
+exception only says your eval failed, which is harder to debug.
+
+If you go for generating adapter, just type “PublicTimeline” at “Source Adapter Class”
+
+Makoto:
+  rhogen source PublicTimeline
+  - do it from rhosync rails-root
+
+sd:
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$ rhogen source PublicTimeline
+rhogen source PublicTimeline
+Generating with source generator:
+[32m     [ADDED][0m  lib/public_timeline.rb
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$ cat lib/public_timeline.rb
+cat lib/public_timeline.rb
+class PublicTimeline < SourceAdapter
+
+  def initialize(source)
+    super(source)
+  end
+
+  def login
+    #TODO: Write some code here
+    # use the variable @source.login and @source.password
+    raise "Please provide some code to perform an authenticated login to the backend application"
+  end
+
+  def query
+    # TODO: write some code here
+    raise "Please provide some code to read records from the backend application"
+  end
+
+  def sync
+    # usually this generic code does the job
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        o=ObjectValue.new
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+  def create(name_value_list)
+    #TODO: write some code here
+    # the backend application will provide the object hash key and corresponding value
+    raise "Please provide some code to create a single object in the backend application using the hash values in name_value_list"
+  end
+
+  def update(name_value_list)
+    #TODO: write some code here
+    # be sure to have a hash key and value for "object"
+    raise "Please provide some code to update a single object in the backend application using the hash values in name_value_list"
+  end
+
+  def delete(name_value_list)
+    #TODO: write some code here if applicable
+    # be sure to have a hash key and value for "object"
+    # for now, we'll say that its OK to not have a delete operation
+    # raise "Please provide some code to delete a single object in the backend application using the hash values in name_value_list"
+  end
+
+  def logoff
+    #TODO: write some code here if applicable
+    # no need to do a raise here
+  end
+end
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$
+
+
+query method
+
+Here is my mimimalist code to fetch query from twitter.
+
+def query
+  uri = URI.parse(@source.url)
+  res = Net::HTTP.start(uri.host, uri.port) {|http|
+    http.get("/statuses/public_timeline.xml")
+  }
+  xml_data = XmlSimple.xml_in(res.body);
+  @result = xml_data["status"]
+end
+
+How is (@source.url) getting filled?
+
+I think I specify it via the form.
+
+The form seems broken.
+
+I'll start from twitter12
+
+Form still broken.
+
+I'll bounce the server.
+
+still broken; the pull down lists nothing
+
+I tried filling out the form anyway:
+
+RuntimeError in SourcesController#create
+
+Called id for nil, which would mistakenly be 4 -- if you really wanted the id of nil, use object_id
+
+Request
+
+Parameters:
+
+{"commit"=>"Create Source",
+ "authenticity_token"=>"178f7336f538ce56af4181840a1553bd9a735dba",
+ "app_id"=>"twitter12",
+ "source"=>{"name"=>"twitter12 PublicTimeline",
+ "incremental"=>"0",
+ "url"=>"http://twitter.com/statuses/public_timeline.xml",
+ "priority"=>"",
+ "adapter"=>"PublicTimeline",
+ "pollinterval"=>"",
+ "login"=>"",
+ "password"=>""}}
+
+darn.
+
+check the group...
+
+nothing.
+
+I'll wipe rhosync and do another git and start over.
+
+git clone git://github.com/rhomobile/rhosync.git rhosync
+mkdir -p log; touch log/development.log
+rake db:bootstrap
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$ rhogen source PublicTimeline
+rhogen source PublicTimeline
+Generating with source generator:
+[32m     [ADDED][0m  lib/public_timeline.rb
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync maco$
+
+
+result:
+
+RuntimeError in SourcesController#create
+
+Called id for nil, which would mistakenly be 4 -- if you really wanted the id of nil, use object_id
+RAILS_ROOT: /Users/maco/pt/customers3/rho/rhosync
+
+Application Trace | Framework Trace | Full Trace
+app/controllers/sources_controller.rb:356:in `create'
+app/controllers/sources_controller.rb:353:in `create'
+Request
+
+Parameters:
+
+{"commit"=>"Create Source",
+ "authenticity_token"=>"178f7336f538ce56af4181840a1553bd9a735dba",
+ "app_id"=>"twitter10",
+ "source"=>{"name"=>"twitter10 public timeline",
+ "incremental"=>"0",
+ "url"=>"http://twitter.com/statuses/public_timeline.xml",
+ "priority"=>"",
+ "adapter"=>"PublicTimeline",
+ "pollinterval"=>"",
+ "login"=>"",
+ "password"=>""}}
+
+
+I'll try the 1-0-unstable branch
+
+I get same error!
+
+Check that I'm on the right branch.
+
+Lars:
+  its a bug
+
+Adam fixed it.
+
+I need to get his fix.
+
+I need to learn some more git...
+
+I just did a clone ; I think he put the fix in master.
+
+I see it:
+
+
+maco-smiths-macbook-pro:~/pt/customers3/rho/rhosync maco$ git log -1
+WARNING: terminal is not fully functional
+-  (press RETURN)
+commit 70ca7b246d205744aa06dc4aad9d298f66305602[m
+Author: adamblum <a@adamblum.com>[m
+Date:   Thu Mar 5 18:25:12 2009 -0800[m
+[m
+    create or edit sources successfully now[m
+
+sure nuf; he fixed it!
 
