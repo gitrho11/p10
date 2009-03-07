@@ -1,0 +1,90 @@
+/pt/c3/rho/p10/notes2009_0307.txt
+
+twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter !
+
+makato:
+  They use “add_triple” method which also adds your API result into ObjectValue, so I decided to use the method to inject my Tweets.
+
+def sync
+  @result.each do |item|
+    item_id = item["id"].first.to_i
+    item.keys.each do |key|
+      value = item[key] ? item[key][0] : ""
+      add_triple(@source.id, id, key.gsub('-','_'), value) ## add_triple() called HERE ................
+      # convert "-" to "_" because "-" is not valid in ruby variable names
+    end
+  end
+end
+
+Dan:
+  I'll look for add_triple()
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$ grep add_triple *rb
+grep add_triple *rb
+basecamp_companies.rb:          add_triple(@source.id, id, key.gsub('-','_'), company[key][0], @source.current_user.id)
+basecamp_people.rb:          add_triple(@source.id, id, key.gsub('-','_'), person[key][0], @source.current_user.id)
+basecamp_projects.rb:        add_triple(@source.id, id, key, project[key][0], @source.current_user.id)
+basecamp_projects.rb:      add_triple(@source.id, id, "company_id", project["company"][0]["id"][0]["content"], @source.current_user.id)
+lighthouse_milestones.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_projects.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_settings.rb:      add_triple(@source.id, "doesnotmatter", key, value.to_s, @source.current_user.id)
+lighthouse_ticket_versions.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_ticket_versions.rb:      add_triple(@source.id, id, "changes", change_msg, @source.current_user.id)
+lighthouse_ticket_versions.rb:      add_triple(@source.id, id, "ticket_id", "#{version['project-id'][0]['content']}-#{version['number'][0]['content']}", @source.current_user.id)
+lighthouse_tickets.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_users.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+rest_api_helpers.rb:  def add_triple(source_id, object_id, attrib, value, user_id)
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$
+
+I found this in rest_api_helpers.rb:
+
+  # make an ObjectValue triple for rhosync
+  def add_triple(source_id, object_id, attrib, value, user_id)
+    return if value.blank?
+
+    o = ObjectValue.new
+    o.source_id=source_id
+    o.object=object_id
+    o.attrib=attrib
+    o.value = eval_value(value)
+    o.user_id = user_id
+
+    # values cannot contain double quotes, convert to single
+    # TBD: there might be other characters as well that need escaping
+    o.value.gsub!(/\"/, "\'")
+
+    if !o.save
+      log "failed creating triple"
+    end
+
+    # log "Add ObjectValue: #{source_id}, #{object_id}, #{attrib}, #{value.inspect} => \n #{o.inspect}\n"
+  end
+
+Notice that some of the syntax is similar to the syntax for the sync() I get from rhogen source MySource:
+
+  def sync
+    # usually this generic code does the job
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        o=ObjectValue.new
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+
+makato then me:
+  Notice how the company_names table is pivoted.
+  We have 3 columns: an_id, industry, company_name
+  We pivot so we have object_values table with 3 columns: an_id, attribute, value
+  This 3 column table is getting filled with data frequently.  I think Vidal wrote a helper method for this and gave it appropriate name: "add_triple"
+
+twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter !
+
+twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter !
+twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter ! twitter !

@@ -1,3 +1,943 @@
 /pt/c3/rho/p10/notes2009_0306.txt
 
-twitter!
+
+vlad: lars discussion
+  rspec?...
+  framework (near readme)
+  lars: only some have specs, we are about 68% complete
+
+Andrew Hogg at Aeroprise:
+  James.Clark@openwaternet.com: 650 868 4560
+  Eli.Katzman@gmail.com: 650 888 0949
+
+
+
+oooooo oooooo oooooo oooooo oooooo oooooo oooooo
+Daily call...
+
+Vlad:
+  - queue issues
+  - camera , blackberry (icky)
+  - Eugeny.. needs help from lars.
+  - will be db schema change
+  - need to add info to ...
+  - json...
+
+Lars:
+  - rhogen stuff almost done
+  - filed new bug, sugar sample, jscript problem showing up in log
+  - testing rhohub
+  - looking good
+  - disk usage works
+  - small problems with editor
+  - black berry issues
+  - wikipediea needs to be tested on bb
+  - Brian and Lars will work together this weekend on some build tasks
+  - we will have thread to do builds
+
+Adam:
+  - fixed problem which vidal will use in l-house
+  - will fix other rho sync stuff
+  - barry sing coming in at 3:30
+  - lars will demo rhohub
+  - Aeroprise project will be owned by rhomobile
+
+Vidal:
+  - Hampton... has a tv show
+  - worked on wikipedia
+  - Hampton is unpredictable; its ready when he feels that its ready.
+  - our rhosync adaptor is up
+  - need to test on windowsmobile, symbian
+  - need 40 character code to do install
+
+Anton:
+  - working on android
+  - working on performance
+  - garbage collection
+
+Eugeny:
+  - working on new BB bug
+  - editing source bug; cannot reproduce
+  - research slow android performance
+  - contents in sugar crm has many records; he cant do full sync
+  - even on iPhone it not fast
+  - we should have indexes on this table (Lars put them in)
+  - Lars entered ticket to support a where clause with OR instead of AND
+  - Need this for "find with select"
+  - working on rake scripts
+  - working with tdd
+  - monday will work on blob-sync
+  - wiki search for client-server sync ; you will find info
+  - here: http://wiki.rhomobile.com/index.php/Client_Server_Sync_Process
+
+Vlad:
+  - code freeze coming on Monday (next monday?)
+
+Vidal:
+  - distributing iPhone apps is cumbersome
+  - I need to pay $99 to apple to get access to a certificate store
+  - 3 modes of distributing apps:
+    - to myself only
+    - to a group of 100 or less
+    - to the app store
+
+ooooooooooooooooooo
+
+con-call:
+  with other guys (who?)
+  Adam, Lars
+  Lars is working on rhohub
+
+They added attributes for rhogen
+wireframes...
+Lars needs file upload/download in zip format
+Next, integrating with Brian's build system
+Brian wants to send status, but how?
+Basecamp ... (what is basecamp doing?) , is it managing this project?
+
+build prototype will be windowsmobile since that is the easiest way to do full-lifecycle
+
+rhohub landing page?
+
+Brian wants list of top5 priorities
+
+Lars:
+  week9 ui enhancements
+  - adding administrators
+  - download - upload apps
+  - items for build process(this #1)
+  - landing page
+
+
+
+
+
+twitter! twitter! twitter! twitter! twitter! twitter! twitter! twitter! twitter!
+
+done:
+  git clone git://github.com/rhomobile/rhosync.git rhosync
+  cd rhosync
+  mkdir -p log; touch log/development.log
+  rake db:bootstrap
+  rhogen source PublicTimeline
+  script/server
+
+  register your account
+  login
+  create an application called Twitter
+  Add Source: Twitter Public Timeline
+  where  http://twitter.com is url
+  class name: PublicTimeline (depends on rhogen above)
+
+def query
+  uri = URI.parse(@source.url)
+  res = Net::HTTP.start(uri.host, uri.port) {|http|
+    http.get("/statuses/public_timeline.xml")
+  }
+  xml_data = XmlSimple.xml_in(res.body);
+  @result = xml_data["status"]
+end
+
+to test above code I created a simple rails controller, view, and route:
+
+class C10Controller < ApplicationController
+  def query
+
+#    uri = URI.parse(@source.url)
+    uri = URI.parse("http://twitter.com")
+    res = Net::HTTP.start(uri.host, uri.port) {|http|
+      http.get("/statuses/public_timeline.xml")
+      # Above line assumes the URL entered at the source form is: http://twitter.com
+    }
+    xml_data = XmlSimple.xml_in(res.body);
+    @result = xml_data["status"]
+
+  end
+end
+
+
+
+<h1>hello world</h1>
+<hr />
+<%= @result %>
+<hr />
+
+
+  # bikle
+  map.connect '/c10/query', :controller => 'c10', :action => 'query'
+  # bikle
+
+
+makato:
+  Next is “sync” method.
+
+  The code repopulated by rhogen command iterates through each entry of @result and put value into ObjectValue object.
+
+I looked for @result...
+
+  def sync
+    # usually this generic code does the job
+    @result.entry_list.each do |x|  ## HERE IT IS.........
+      x.name_value_list.each do |y|
+        o=ObjectValue.new           ## ObjectValue here......
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+in line 3 above
+ObjectValue line 5...
+It acts like an AR object; it has a .save method.
+
+Notice the ref to @source; maybe I create that object with the create source form.
+
+
+makato:
+
+sync method
+
+Next is “sync” method. The code repopulated by rhogen command iterates
+through each entry of @result and put value into ObjectValue
+object. ObjectValue is a table where you can store the result of API
+response as key => value pair.
+
+The below are the difference between normal ORM(Object Relational Mapping) object table and ObjectValue table.
+
+me:
+  I dont understand what a normal ORM(Object Relational Mapping) object table is.
+  I'll look at the ObjectValue table
+
+It's not there.
+
+They renamed it:
+
+sqlite> .schema object_values
+CREATE TABLE "object_values" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "source_id" integer, "attrib" varchar(255), "object" varchar(255), "value" text(255), "update_type" varchar(255), "created_at" datetime, "updated_at" datetime, "user_id" integer, "pending_id" integer);
+
+makato:
+  What I did not understand much was where “entrylist” and “namevalue_list” attributes are coming.
+
+I think this is related to my observation I wrote in /pt/c3/rho/p10/notes2009_0304.txt:
+
+A RhoSync Sync
+The sync code takes apart the query results and puts its into the object_values table. For example, this handles the results coming back from SugarCRM web service calls.
+
+  def sync
+    puts "SugarCRM #{@module_name} sync with #{@result.entry_list.length}"
+
+    user_id=@source.current_user.id
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        unless y.value.blank?
+          o=ObjectValue.new
+          o.source_id=@source.id
+          o.object=x['id']
+          o.attrib=y.name
+          o.value=y.value
+          o.user_id=user_id if @source.credential
+          o.save
+        end
+      end
+    end
+  end
+
+This smells like a pivot where I take a wide row and transform it into a series of narrow rows.
+
+
+makato:
+  At the rhomobile tutorial, @result is set like below at query method.
+   @result = client.get_entry_list(session_id,'Account','','',0,['name','industry'],10000,0)
+  And it also explains that “client” variable is available and not for REST API.
+
+Me:
+  huh?
+  I see way-above that @result gets filled with data obtained via query.
+  Is client an object related to the actual phone or is it related to the source?
+  I think it is related to the source.
+
+
+
+I see:
+
+The following is sample query code from the SugarCRM Accounts
+source. Just one line does the trick. The one that ship is the
+db/migrate/sources.yml file has more comments and intermediate
+variables for understandability but does exactly the same thing.
+
+ result = client.get_entry_list(session_id,'Account','','',0,['name','industry'],10000,0)
+
+Okay so this is much simpler that the http call in the query() method in the twitter code I pasted above.
+
+Let's look for the SugarCRM Accounts source.
+  -I'd track it down 2 ways
+  -see if I can get the class name from the source form
+  -look in the lib directory
+
+ok if I login as admin and go to this url:
+  http://localhost:3000/apps/SugarCRM/sources/SugarAccounts/edit
+I can see the source form.
+
+I see this as the Source adapter classname: SugarAccounts
+
+What's in lib?
+
+  /pt/c3/rho/rhosync/lib:
+  total used in directory 296 available 201169692
+  drwxr-xr-x  36 maco  staff  1224 Mar  6 11:45 .
+  drwxr-xr-x  21 maco  staff   714 Mar  6 12:36 ..
+  -rw-r--r--   1 maco  staff  1705 Mar  6 10:14 account.rb
+  -rw-r--r--   1 maco  staff  6673 Mar  6 10:14 authenticated_system.rb
+  -rw-r--r--   1 maco  staff   751 Mar  6 10:14 authenticated_test_helper.rb
+  -rw-r--r--   1 maco  staff  1141 Mar  6 10:14 basecamp_companies.rb
+  -rw-r--r--   1 maco  staff  1468 Mar  6 10:14 basecamp_people.rb
+  -rw-r--r--   1 maco  staff  1018 Mar  6 10:14 basecamp_projects.rb
+  -rw-r--r--   1 maco  staff  2467 Mar  6 10:14 lighthouse_milestones.rb
+  -rw-r--r--   1 maco  staff  3559 Mar  6 10:14 lighthouse_projects.rb
+  -rw-r--r--   1 maco  staff  3421 Mar  6 10:14 lighthouse_sample_readme.txt
+  -rw-r--r--   1 maco  staff   462 Mar  6 10:14 lighthouse_settings.rb
+  -rw-r--r--   1 maco  staff  6001 Mar  6 10:14 lighthouse_ticket_versions.rb
+  -rw-r--r--   1 maco  staff  6871 Mar  6 10:14 lighthouse_tickets.rb
+  -rw-r--r--   1 maco  staff  2953 Mar  6 10:14 lighthouse_users.rb
+  -rw-r--r--   1 maco  staff  1935 Mar  6 11:45 public_timeline.rb
+  -rw-r--r--   1 maco  staff  1735 Mar  6 10:14 rest_api_helpers.rb
+  drwxr-xr-x   6 maco  staff   204 Mar  6 10:14 siebel
+  -rw-r--r--   1 maco  staff  4506 Mar  6 10:14 siebel_service_requests.rb
+  -rw-r--r--   1 maco  staff   674 Mar  6 10:14 source_adapter.rb
+  -rw-r--r--   1 maco  staff   983 Mar  6 10:14 sugar_accounts.rb  ************ here it is
+  -rw-r--r--   1 maco  staff  3406 Mar  6 10:14 sugar_adapter.rb
+  -rw-r--r--   1 maco  staff   569 Mar  6 10:14 sugar_calls.rb
+  -rw-r--r--   1 maco  staff   649 Mar  6 10:14 sugar_campaigns.rb
+  -rw-r--r--   1 maco  staff   527 Mar  6 10:14 sugar_cases.rb
+  -rw-r--r--   1 maco  staff  1240 Mar  6 10:14 sugar_contacts.rb
+  -rw-r--r--   1 maco  staff   963 Mar  6 10:14 sugar_employees.rb
+  -rw-r--r--   1 maco  staff  1306 Mar  6 10:14 sugar_leads.rb
+  -rw-r--r--   1 maco  staff   574 Mar  6 10:14 sugar_meetings.rb
+  -rw-r--r--   1 maco  staff   670 Mar  6 10:14 sugar_opportunities.rb
+  -rw-r--r--   1 maco  staff  1021 Mar  6 10:14 sugar_products.rb
+  -rw-r--r--   1 maco  staff  1414 Mar  6 10:14 sugar_quotes.rb
+  -rw-r--r--   1 maco  staff   233 Mar  6 10:14 sugar_teams.rb
+  -rw-r--r--   1 maco  staff   865 Mar  6 10:14 sugar_users.rb
+  drwxr-xr-x   4 maco  staff   136 Mar  6 10:14 tasks
+  -rw-r--r--   1 maco  staff  4851 Mar  6 10:14 wikipedia.rb
+
+Here is the source for sugar_accounts.rb:
+
+
+class SugarAccounts < SugarAdapter
+
+  def initialize(source,credential)
+    super(source,credential)
+
+    @module_name = 'Accounts'
+    @select_fields = %w(
+      name
+      date_entered
+      date_modified
+      modified_user_id
+      modified_by_name
+      created_by
+      created_by_name
+      description
+      assigned_user_id
+      assigned_user_name
+      team_id
+      team_name
+      account_type
+      industry
+      annual_revenue
+      phone_fax
+      billing_address_street
+      billing_address_city
+      billing_address_state
+      billing_address_postalcode
+      billing_address_country
+      rating
+      phone_office
+      phone_alternate
+      website
+      ownership
+      employees
+      ticker_symbol
+      shipping_address_street
+      shipping_address_city
+      shipping_address_state
+      shipping_address_postalcode
+      shipping_address_country
+      email1
+      parent_id
+      sic_code
+      parent_name
+      campaign_id
+    )
+  end
+end
+
+
+I was expecting to see something like this:
+
+class PublicTimeline < SourceAdapter
+
+  def initialize(source)
+    super(source)
+  end
+
+  def login
+    #TODO: Write some code here
+    # use the variable @source.login and @source.password
+    raise "Please provide some code to perform an authenticated login to the backend application"
+  end
+
+  def query
+     result = client.get_entry_list(session_id,'Account','','',0,['name','industry'],10000,0)
+  end
+
+snip....
+end
+
+I'll look in sugar_adpator.rb
+
+here:
+
+require 'soap/wsdlDriver'
+
+class SugarAdapter < SourceAdapter
+
+  attr_accessor :module_name
+  attr_accessor :order_by
+  attr_accessor :select_fields
+  attr_accessor :query_filter
+
+  attr_accessor :client
+
+  def initialize(source,credential)
+    puts "SugarCRM initialize with #{source.inspect.to_s}"
+
+    super(source,credential)
+
+    @select_fields = [] # leave empty like this to get all fields
+    @order_by = ''
+    @query_filter = '' # you can also use SQL like 'accounts.name like '%company%''
+
+    url = (credential and !credential.url.blank?) ? credential.url : source.url
+    p "Creating adapter for "+ url if url
+    begin
+      @client = SOAP::WSDLDriverFactory.new(url).create_rpc_driver
+    rescue RuntimeError => e
+      logger.info "Failed to create WSDL driver: " + e.to_s
+    end
+    @client.options['protocol.http.receive_timeout'] = 3600
+  end
+
+  def login
+    puts "SugarCRM #{@module_name} login"
+    if @source.credential and !@source.credential.login.blank?
+      u = @source.credential.login
+      p = Digest::MD5.hexdigest(@source.credential.password)
+    else
+      u = @source.login
+      p "Login "+u
+      p = Digest::MD5.hexdigest(@source.password)
+    end
+
+    ua = {'user_name' => u,'password' => p}
+    ss = @client.login(ua,nil)
+    if ss.error.number.to_i != 0
+      p "failed to login - #{ss.error.description} with #{u},#{p}"
+      raise "Failed to login"
+      return
+    else
+      @session_id = ss['id']
+      uid = @client.get_user_id(@session_id)
+    end
+  end
+
+  def query
+    puts "SugarCRM #{@module_name} query"
+
+    offset = 0
+    max_results = '10000' # if set to 0 or '', this doesn't return all the results
+    deleted = 0 # whether you want to retrieve deleted records, too
+
+    # puts "============\n"
+    # @client.get_module_fields(@session_id,@module_name).module_fields.each do |field|
+    #   puts field.name
+    # end
+    # puts "============\n"
+
+    @count = @client.get_entries_count(@session_id,@module_name,@query_filter,deleted).result_count
+    puts "@count =#{@count}"
+
+    @result = @client.get_entry_list(@session_id,@module_name,@query_filter,@order_by,offset,@select_fields,max_results,deleted);
+  end
+
+  def sync
+    puts "SugarCRM #{@module_name} sync with #{@result.entry_list.length}"
+
+    user_id=@source.current_user.id
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        unless y.value.blank?
+          o=ObjectValue.new
+          o.source_id=@source.id
+          o.object=x['id']
+          o.attrib=y.name
+          o.value=y.value
+          o.user_id=user_id if @source.credential
+          o.save
+        end
+      end
+    end
+  end
+
+  def create(name_value_list)
+    puts "SugarCRM #{@module_name} create #{name_value_list.inspect.to_s}"
+
+    result=@client.set_entry(@session_id,@module_name,name_value_list)
+  end
+
+  def update(name_value_list)
+    puts "SugarCRM #{@module_name} update #{name_value_list.inspect.to_s}"
+
+    result=@client.set_entry(@session_id,@module_name,name_value_list)
+  end
+
+  def delete(name_value_list)
+    puts "SugarCRM #{@module_name} delete #{name_value_list.inspect.to_s}"
+
+    name_value_list.push({'name'=>'deleted','value'=>'1'});
+    result=@client.set_entry(@session_id,@module_name,name_value_list)
+  end
+
+  def logoff
+    @client.logout(@session_id)
+  end
+
+  def set_callback(notify_url)
+  end
+end
+
+Notice the line above:
+      @result = @client.get_entry_list(@session_id,@module_name,@query_filter,@order_by,offset,@select_fields,max_results,deleted);
+
+ok so that is how I get result.
+where does @client come from?
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$ grep client sugar_adapter.rb
+grep client sugar_adapter.rb
+  attr_accessor :client
+      @client = SOAP::WSDLDriverFactory.new(url).create_rpc_driver
+    @client.options['protocol.http.receive_timeout'] = 3600
+    ss = @client.login(ua,nil)
+      uid = @client.get_user_id(@session_id)
+    # @client.get_module_fields(@session_id,@module_name).module_fields.each do |field|
+    @count = @client.get_entries_count(@session_id,@module_name,@query_filter,deleted).result_count
+    @result = @client.get_entry_list(@session_id,@module_name,@query_filter,@order_by,offset,@select_fields,max_results,deleted);
+    result=@client.set_entry(@session_id,@module_name,name_value_list)
+    result=@client.set_entry(@session_id,@module_name,name_value_list)
+    result=@client.set_entry(@session_id,@module_name,name_value_list)
+    @client.logout(@session_id)
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$
+
+
+ah @client is derived from url
+  I think url comes from the admin who sets up the sugar_account source.
+
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$ grep url sugar_adapter.rb
+grep url sugar_adapter.rb
+    url = (credential and !credential.url.blank?) ? credential.url : source.url
+    p "Creating adapter for "+ url if url
+      @client = SOAP::WSDLDriverFactory.new(url).create_rpc_driver
+  def set_callback(notify_url)
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$
+
+Notice that when I create a sugar_account object, I need to supply 2 pieces of info: source, credential:
+require 'soap/wsdlDriver'
+
+class SugarAdapter < SourceAdapter
+
+  attr_accessor :module_name
+  attr_accessor :order_by
+  attr_accessor :select_fields
+  attr_accessor :query_filter
+
+  attr_accessor :client
+
+  def initialize(source,credential)
+    puts "SugarCRM initialize with #{source.inspect.to_s}"
+
+    super(source,credential)
+
+    @select_fields = [] # leave empty like this to get all fields
+    @order_by = ''
+    @query_filter = '' # you can also use SQL like 'accounts.name like '%company%''
+
+    url = (credential and !credential.url.blank?) ? credential.url : source.url
+    p "Creating adapter for "+ url if url
+    begin
+      @client = SOAP::WSDLDriverFactory.new(url).create_rpc_driver
+    rescue RuntimeError => e
+      logger.info "Failed to create WSDL driver: " + e.to_s
+    end
+    @client.options['protocol.http.receive_timeout'] = 3600
+  end
+
+
+Lets see initialize() for super():
+class SourceAdapter
+  attr_accessor :client
+  def initialize(source=nil,credential=nil)
+    @source = source.nil? ? self : source
+  end
+
+  def login
+
+  end
+
+  def query
+  end
+
+  def sync
+    user_id=@source.current_user.id
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        o=ObjectValue.new
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+  def create(name_value_list)
+  end
+
+  def update(name_value_list)
+  end
+
+  def delete(name_value_list)
+  end
+
+  def logoff
+  end
+
+  def set_callback(notify_urL)
+  end
+end
+
+This looks similar to the code which gets generated by
+rhogen source MySourceClass
+
+are the 2 syncs ident??:
+
+
+  def sync
+    user_id=@source.current_user.id
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        o=ObjectValue.new
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+
+
+  def sync
+    # usually this generic code does the job
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        o=ObjectValue.new
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+No, notice that sugar adaptor has extra line:
+    user_id=@source.current_user.id
+
+
+
+Makato:
+  And it also explains that “client” variable is available and not for REST API.
+  trans:   And it also explains that “client” variable is available but not necessary for REST API.
+
+Actual text from wiki:
+
+
+A RhoSync Login
+
+The following is login code sample source adapter for SugarCRM accounts.
+
+This code can be placed inside a Source Adapter Class shown
+above (specifically inside the login method). Or it can be placed
+inside the Login part of the Source form if you're not using a source
+adapter class.
+
+It uses the SOAP web service interfaces exposed by SugarCRM.
+
+ u=@source.login
+ pwd=Digest::MD5.hexdigest(@source.password)
+ ua={'user_name' => u,'password' => pwd}
+ ss=client.login(ua,nil)
+ if ss.error.number.to_i != 0
+  puts 'failed to login - #{ss.error.description}'
+ else
+  session_id = ss['id']
+  uid = client.get_user_id(session_id)
+ end
+
+Notice that you access parameters that have been set for the source as attributes of the @source variable.
+
+For example the login and password are available in @source.login and @source.password.
+
+Also note that the "client" variable contains the SOAP driver that methods are exposed on.
+
+Also note that subsequent operations will use the session_id variable.
+
+You can use whatever variable name you wish for the session but we suggest following this convention.
+
+Available "Builtin" Variables
+
+client - the SOAP driver created from the WSDL file at @source.url. Not necessary if you are using a REST API
+@source.url - the URL where the backend is exposed. Typically used if you are calling a REST API
+@source.login - the userid to login with
+@source.password - the password to login with
+
+A RhoSync Query
+
+The following is sample query code from the SugarCRM Accounts
+source. Just one line does the trick. The one that ship is the
+db/migrate/sources.yml file has more comments and intermediate
+variables for understandability but does exactly the same thing.
+
+ result = client.get_entry_list(session_id,'Account','','',0,['name','industry'],10000,0)
+
+
+Me:
+  when I see @source, I should think of the form I fill out which has the name of the adaptor and the URL of the source and login and password
+
+  Also remember that the form has a Question field which Lars told me is used by wikipedia.
+
+  I queried up source adaptor rhosync and found Vidal's lighthouse code; I'll study that next after twitter.
+  Actually I should study sugar next
+
+Makato:
+  The Rhomobile tutorial page shows example using SugarCRM which uses SOAP API.
+  Since Twitter uses REST API, I referred to Lighthouse and BaseCamp examples which are also Rails based app and uses REST API.
+
+links:
+  http://github.com/rhomobile/rhosync/blob/53782a1e0c310d25a86b6f514d56bb8832aaab3b/lib/lighthouse_tickets.rb
+  http://github.com/rhomobile/rhosync/blob/53782a1e0c310d25a86b6f514d56bb8832aaab3b/lib/basecamp_people.rb
+
+lighthouse_tickets.rb:
+  - written by Vidal
+  - comments are very good
+  - # login and logoff are left intentionally unimplemented (i.e. we use baseclass implementation) in REST
+  - He gives some demo curl calls which are handy
+  - I notice: include RestAPIHelpers
+
+baseclass imp:
+  - source_adapter.rb:
+    - both login and logoff are blank
+
+basecamp_people.rb:
+  - # documentation for this REST API at http://developer.37signals.com/basecamp/people.shtml
+  - login: #left intentionally blank
+  - I notice: include RestAPIHelpers
+
+makato:
+  By examining the above examples, you notice that there is a helper called RestAPIHelpers . Let’s use that. I included the helper at the top of the class like this
+
+  class PublicTimeline < SourceAdapter
+    include RestAPIHelpers
+
+
+basecamp api:
+  http://developer.37signals.com/basecamp/index.shtml
+
+  The Basecamp API is implemented as vanilla XML over HTTP using all
+  four verbs (GET/POST/PUT/DELETE). Every resource, like Post,
+  Comment, or TodoList, has their own URL and are manipulated in
+  isolation.
+
+Be sure to set the "Content-Type" header in your requests to
+"application/xml" (or "application/x-yaml" if you use YAML requests),
+which will identify the format of the data being sent. Also, you must
+set the "Accept" header to "application/xml", so that Basecamp will
+send you XML in reply, instead of HTML. Example with Curl:
+
+  curl -H 'Accept: application/xml' -H 'Content-Type: application/xml' -d '<request>...</request>' http://url
+
+Every request must include the Authorization HTTP header.
+
+Here's an example using curl:
+
+curl -H 'Accept: application/xml' -H 'Content-Type: application/xml' -u hoodlum:up2n0g00d -d '<request>...</request>' http://url
+
+
+SSL Note: A request made against an account that has SSL turned on will get a redirect answer back. Be sure to call over https for an account that requires that.
+
+Attaching Files via the API
+you need to send a POST request to the "/upload" URI, with the HTTP Accept header set to 'application/xml'. The body of the request should be the content of the file you want to attach.
+
+If the upload succeeds, you'll get an XML response back, telling you the ID of your upload.
+
+HTTP/1.0 200 OK
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<upload><id>441b2cec.eve.21267</id></upload>
+
+
+Armed with the ID, your next step is to attach the file to a
+record. Using the "create message" action, for instance, you pass an
+array of attachment data in. Assuming you had two files you wanted to
+attach (which you had previously uploaded, as described), your
+attachment data would look something like this (formatted as XML):
+
+<attachments>
+  <name>A pretty sunset</name>
+  <file>
+    <file>441b2cec.eve.21267</file>
+    <content-type>image/jpg</content-type>
+    <original-filename>sunset.jpg</original-filename>
+  </file>
+</attachments>
+<attachments>
+  <name>The ocean</name>
+  <file>
+    <file>441b2fff.log.21285</file>
+    <content-type>image/png</content-type>
+    <original-filename>ocean.png</original-filename>
+  </file>
+</attachments>
+
+
+The Ruby wrapper implements this conversion for you.
+
+Vidal,
+I'm looking at this file:
+  rhosync/lib/lighthouse_tickets.rb
+
+I see your comment:
+  # login and logoff are left intentionally unimplemented (i.e. we use baseclass implementation) in REST
+
+So, then I looked at the baseclass-file:
+  rhosync/lib/source_adapter.rb
+
+Both login and logoff are implemented but they contain nothing.
+
+Perhaps the URL associated with LighthouseTickets is all we need?
+
+For LighthouseTickets,
+the Source-Adaptor form shows me this URL from the rhosync database:
+  - http://rhomobile.lighthouseapp.com
+
+Is that enough?
+
+I'm worried I misunderstand something vital about how rhosync works against REST-sources.
+
+I'll chat with you on Monday.
+
+Thanks,
+--Dan
+
+
+makato:
+  They use “add_triple” method which also adds your API result into ObjectValue, so I decided to use the method to inject my Tweets.
+
+def sync
+  @result.each do |item|
+    item_id = item["id"].first.to_i
+    item.keys.each do |key|
+      value = item[key] ? item[key][0] : ""
+      add_triple(@source.id, id, key.gsub('-','_'), value) ## add_triple() called HERE ................
+      # convert "-" to "_" because "-" is not valid in ruby variable names
+    end
+  end
+end
+
+Dan:
+  I'll look for add_triple()
+
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$ grep add_triple *rb
+grep add_triple *rb
+basecamp_companies.rb:          add_triple(@source.id, id, key.gsub('-','_'), company[key][0], @source.current_user.id)
+basecamp_people.rb:          add_triple(@source.id, id, key.gsub('-','_'), person[key][0], @source.current_user.id)
+basecamp_projects.rb:        add_triple(@source.id, id, key, project[key][0], @source.current_user.id)
+basecamp_projects.rb:      add_triple(@source.id, id, "company_id", project["company"][0]["id"][0]["content"], @source.current_user.id)
+lighthouse_milestones.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_projects.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_settings.rb:      add_triple(@source.id, "doesnotmatter", key, value.to_s, @source.current_user.id)
+lighthouse_ticket_versions.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_ticket_versions.rb:      add_triple(@source.id, id, "changes", change_msg, @source.current_user.id)
+lighthouse_ticket_versions.rb:      add_triple(@source.id, id, "ticket_id", "#{version['project-id'][0]['content']}-#{version['number'][0]['content']}", @source.current_user.id)
+lighthouse_tickets.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+lighthouse_users.rb:        add_triple(@source.id, id, key.gsub('-','_'), value, @source.current_user.id)
+rest_api_helpers.rb:  def add_triple(source_id, object_id, attrib, value, user_id)
+maco-smiths-macbook-pro:/pt/c3/rho/rhosync/lib maco$
+
+I found this in rest_api_helpers.rb:
+
+  # make an ObjectValue triple for rhosync
+  def add_triple(source_id, object_id, attrib, value, user_id)
+    return if value.blank?
+
+    o = ObjectValue.new
+    o.source_id=source_id
+    o.object=object_id
+    o.attrib=attrib
+    o.value = eval_value(value)
+    o.user_id = user_id
+
+    # values cannot contain double quotes, convert to single
+    # TBD: there might be other characters as well that need escaping
+    o.value.gsub!(/\"/, "\'")
+
+    if !o.save
+      log "failed creating triple"
+    end
+
+    # log "Add ObjectValue: #{source_id}, #{object_id}, #{attrib}, #{value.inspect} => \n #{o.inspect}\n"
+  end
+
+Notice that some of the syntax is similar to the syntax for the sync() I get from rhogen source MySource:
+
+  def sync
+    # usually this generic code does the job
+    @result.entry_list.each do |x|
+      x.name_value_list.each do |y|
+        o=ObjectValue.new
+        o.source_id=@source.id
+        o.object=x['id']
+        o.attrib=y.name
+        o.value=y.value
+        o.user_id=user_id if user_id
+        o.save
+      end
+    end
+  end
+
+
+
+twitter! twitter! twitter! twitter! twitter! twitter! twitter! twitter! twitter!
